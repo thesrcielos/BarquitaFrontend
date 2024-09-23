@@ -68,6 +68,7 @@ function createTaskContainer(containerTasks,task, id){
     const deleteButton = document.querySelector(`.delete-btn${id}`); 
     const completedButton = document.querySelector(`.myCheckbox${id}`);
     const taskInfo = document.querySelector(`.task-info${id}`);
+
     menuItemButton.addEventListener("click",()=>{
         dropdownContent.classList.toggle("visible");
     });
@@ -118,6 +119,7 @@ function getIdFromURL(){
 
 function addEventListenerToEditButton(editButton, id){
     editButton.addEventListener("click", (event)=>{
+        selectedButtonMenu = true;
         //Put ?edit=id in the url
         window.history.pushState({}, '', `?edit=${id}`);
         event.stopPropagation();
@@ -138,13 +140,15 @@ function addEventListenerToEditButton(editButton, id){
 
         const editNameForm = document.querySelector("#editNameForm");
         editNameForm.addEventListener("submit",handleEventSubmitEditInfo);
-        
+        selectedButtonMenu = false;
     });
 }
 
 function addEventListenerToCheckBox(checkbox, id){
     checkbox.addEventListener("change",(event)=>{
-        event.stopPropagation();
+
+        const container = document.querySelector(".visualize-task-info-container");
+        container.style.display="none";
         const taskElement = document.querySelector(`.task-container${id}`);
         const dropdown = document.querySelector(`.dropdown-content${id}`);
         taskElement.classList.toggle("hide");
@@ -168,13 +172,13 @@ function createEditFormHTML(editInfoContainer) {
             <h2>Editar Tarea</h2>
             <button class="close-edit">x</button>
             <form id="editNameForm">
-                <label for="name">Nombre:</label>
+                <label for="name"><b>Nombre</b></label>
                 <input type="text" id="name" name="name" placeholder="Ingrese su nombre" value="${task.name}" required>    
-                <label for="description">Descripción:</label>
+                <label for="description"><b>Descripción</b></label>
                 <textarea id="description" "name="description" rows="5" columns="40" required>${task.description}</textarea>
-                <label for="deadline">Selecciona la fecha y hora:</label>
+                <label for="deadline"><b>Fecha y hora</b></label>
                 <input type="datetime-local" id="deadline" name="deadline" required>
-                <label for="prioridad">Selecciona la prioridad:</label>
+                <label for="prioridad"><b>Prioridad</b></label>
                 <select id="options" name="priority" required>
                     <option value="" disabled selected>Seleccionar</option>
                     <option value="Baja">Baja</option>
@@ -201,8 +205,8 @@ function createTaskHTML(taskContainer, task, id){
     <div class="dropdown-content dropdown-content${id}">
         <button class="edit-btn edit-btn${id}">✏️ Editar</button>
         <button class="delete-btn delete-btn${id}">🗑️ Eliminar</button>
-        <label class="checkbox-button">
-            <input type="checkbox" class="myCheckbox${id}" name="myCheckbox" value="no">
+        <label class="checkbox-button checkbox-button${id}">
+            <input type="checkbox" class="myCheckbox myCheckbox${id}" name="myCheckbox" value="no">
             <span>Completada</span>
         </label>
     </div>     
@@ -228,10 +232,10 @@ function addEventListenerToTaskInfo(taskInfo,id){
         container.innerHTML = `
             <div class="visualize-task-info">
                 <button class="close-visualize">x</button>
-                <p>${task.name}</p>
-                <p>${task.description}</p>
-                <p>${task.date}</p>
-                <p>${task.priority}</p>
+                <p>Nombre: ${task.name}</p>
+                <p>Descripción: ${task.description}</p>
+                <p>Fecha límite: ${task.date}</p>
+                <p>Prioridad: ${task.priority}</p>
             </div>
         `;
         const closeButton = document.querySelector(".close-visualize");
