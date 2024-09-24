@@ -41,6 +41,8 @@ const containerTasks = document.querySelector(".container-tasks");
 const containerTasksCompleted = document.querySelector(".container-tasks-completed");
 const hideButtonNotCompletedTasks = document.querySelector(".hide-button-not-complete");
 const hideButtonCompletedTasks = document.querySelector(".hide-button-complete");
+const addTaskButton = document.querySelector(".add-task-button");
+const addTaskInformation = document.querySelector(".add-info-container");
 
 hideButtonNotCompletedTasks.addEventListener("click", ()=>{
     containerTasks.classList.toggle("hide");
@@ -52,6 +54,10 @@ hideButtonCompletedTasks.addEventListener("click", ()=>{
 
 tasks.forEach((task, index)=>{
     createTaskContainer(containerTasks,task, index);
+});
+
+addTaskButton.addEventListener("click", ()=>{
+    containerTasks.classList.toggle("hide");
 });
 
 
@@ -259,4 +265,29 @@ function minuteFormat(minutes){
 
 function hoursFormat(hours){
     return hours.length > 1 ? hours : "0"+hours;
+}
+
+function createAddTaskInformationHTML(addTaskInformation) {
+    addTaskInformation.innerHTML = `
+        <div class="form-container">
+            <h2>Editar Tarea</h2>
+            <button class="close-edit">x</button>
+            <form id="editNameForm">
+                <label for="name"><b>Nombre</b></label>
+                <input type="text" id="name" name="name" placeholder="Ingrese su nombre" value="" required>    
+                <label for="description"><b>Descripción</b></label>
+                <textarea id="description" "name="description" rows="5" columns="40" required></textarea>
+                <label for="deadline"><b>Fecha y hora</b></label>
+                <input type="datetime-local" id="deadline" name="deadline" required>
+                <label for="prioridad"><b>Prioridad</b></label>
+                <select id="options" name="priority" required>
+                    <option value="" disabled selected>Seleccionar</option>
+                    <option value="Baja">Baja</option>
+                    <option value="Media">Media</option>
+                    <option value="Alta">Alta</option>
+                </select>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    `;
 }

@@ -148,7 +148,7 @@ p {
     display: block;
 }
 
-.edit-info-container, .visualize-task-info-container{
+.edit-info-container, .visualize-task-info-container, .add-info-container{
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
@@ -255,4 +255,22 @@ textarea {
 
 .close-visualize:hover {
     color: #ff4d4d;
+}
+
+
+.add-task-button {
+    background-color: #4CAF50; /* Color verde */
+    color: white; /* Texto blanco */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno */
+    text-align: center; /* Centrar texto */
+    text-decoration: none; /* Sin subrayado */
+    display: inline-block; /* Para que funcione el padding */
+    font-size: 16px; /* Tamaño de fuente */
+    margin: 10px 0; /* Margen superior e inferior */
+    cursor: pointer; /* Cursor tipo puntero al pasar el mouse */
+}
+
+.add-task-button:hover {
+    background-color: #45a049; /* Color verde más oscuro al pasar el mouse */
 }
