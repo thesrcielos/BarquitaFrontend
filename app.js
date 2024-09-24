@@ -1,41 +1,5 @@
-const tasks = [
-    {
-        'name':"task 1",
-        'description':"description task 1",
-        'date':"date",
-        'priority':"Baja"
-    },
-    {
-        'name':"task2",
-        'description':"description task 2",
-        'date':"date",
-        'priority':"Baja"
-    },
-    {
-        'name':"task3",
-        'description':"description task 3",
-        'date':"date",
-        'priority':"Baja"
-    },
-    {
-        'name':"task4",
-        'description':"description task 4",
-        'date':"date",
-        'priority':"Baja"
-    },
-    {
-        'name':"task5",
-        'description':"description task 5",
-        'date':"date",
-        'priority':"Baja"
-    },
-    {
-        'name':"task6",
-        'description':"description task 6",
-        'date':"date",
-        'priority':"Baja"
-    }
-];
+import {getAllTasksByState, addTask, deleteTask, updateTask} from './connectionBackend.js'
+const tasks = getAllTasksByState(false);
 
 const containerTasks = document.querySelector(".container-tasks");
 const containerTasksCompleted = document.querySelector(".container-tasks-completed");
@@ -75,9 +39,10 @@ function createTaskContainer(containerTasks,task, id){
 
     
     deleteButton.addEventListener("click", (event)=>{
+        event.stopPropagation();
         taskContainer.style.display = "none";
         containerTasks.removeChild(taskContainer);
-        event.stopPropagation();
+        
     });
 
     addEventListenerToCheckBox(completedButton,id);
