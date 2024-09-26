@@ -41,6 +41,9 @@ const containerTasks = document.querySelector(".container-tasks");
 const containerTasksCompleted = document.querySelector(".container-tasks-completed");
 const hideButtonNotCompletedTasks = document.querySelector(".hide-button-not-complete");
 const hideButtonCompletedTasks = document.querySelector(".hide-button-complete");
+const addTaskButton = document.querySelector(".add-task-button");
+const orderByPriorityButton = document.querySelector(".order-by-priority-button");
+const orderByDateButton = document.querySelector(".order-by-date-button");
 
 hideButtonNotCompletedTasks.addEventListener("click", ()=>{
     containerTasks.classList.toggle("hide");
@@ -54,6 +57,17 @@ tasks.forEach((task, index)=>{
     createTaskContainer(containerTasks,task, index);
 });
 
+addTaskButton.addEventListener("click", ()=>{
+    showAddTaskForm();
+});
+
+orderByDateButton.addEventListener("click",  ()=>{
+    showDateFilter();
+});
+
+orderByPriorityButton.addEventListener("click", () => {
+    showPriorityFilter();
+});
 
 function createTaskContainer(containerTasks,task, id){
     const taskContainer = document.createElement("div");
@@ -260,4 +274,143 @@ function minuteFormat(minutes){
 
 function hoursFormat(hours){
     return hours.length > 1 ? hours : "0"+hours;
+}
+
+function showAddTaskForm() {
+    const addTaskInformation = document.querySelector(".add-task-info-container"); 
+    addTaskInformation.innerHTML = `
+        <button class="close-add-task">✖️</button>
+        <div class="task-form">
+            <h2>Nueva Tarea</h2>
+            <label for="task-name">Nombre:</label>
+            <input type="text" id="task-name" placeholder="Ingrese el nombre de la tarea" required>
+
+            <label for="task-description">Descripción:</label>
+            <textarea id="task-description" placeholder="Ingrese la descripción de la tarea" rows="4" required></textarea>
+
+            <label for="task-priority">Prioridad:</label>
+            <select id="task-priority" required>
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+            </select>
+            <button id="create-task-button">Crear</button>
+        </div>
+    `;
+
+    // Mostrar el formulario
+    addTaskInformation.classList.add("show");
+
+    // Cerrar el formulario
+    const closeButton = document.querySelector(".close-add-task");
+    closeButton.addEventListener("click", () => {
+        addTaskInformation.classList.remove("show");
+    });
+
+    const createTaskButton = document.getElementById("create-task-button");
+    createTaskButton.addEventListener("click", addNewTask);
+}
+
+function addNewTask(){
+    const name = document.getElementById("task-name").value;
+    const description = document.getElementById("task-description").value;
+    const priority = document.getElementById("task-priority").value;
+    const date = new Date().toLocaleDateString();
+    const addTaskInformation = document.querySelector(".add-task-info-container");
+    
+    if (name && description && priority) {
+        const newTask = {
+            name: name,
+            description: description,
+            date: date,
+            priority: priority
+        };
+        
+        tasks.push(newTask);
+        const taskId = tasks.length - 1;
+        createTaskContainer(containerTasks, newTask, taskId);
+
+        // Limpiar el formulario
+        addTaskInformation.innerHTML = '';
+        addTaskInformation.classList.remove("show");
+    } else {
+        alert("Por favor, rellene todos los campos.");
+    }
+}
+
+function showDateFilter() {
+    const dateFilterContainer = document.querySelector(".date-filter-container");
+    dateFilterContainer.classList.add("show");
+
+    // Cerrar el cuadro de fecha
+    const closeButton = document.querySelector(".close-date-filter");
+    closeButton.addEventListener("click", () => {
+        dateFilterContainer.classList.remove("show");
+    });
+
+    // Filtrar tareas por la fecha seleccionada
+    const filterByDateButton = document.getElementById("filter-by-date-button");
+    filterByDateButton.addEventListener("click", () => {
+        const selectedDate = document.getElementById("filter-date").value;
+        filterTasksByDate(selectedDate);
+        dateFilterContainer.classList.remove("show"); // Cerrar el cuadro después de filtrar
+    });
+}
+
+function filterTasksByDate(selectedDate) {
+    if (!selectedDate) {
+        alert("Por favor, seleccione una fecha.");
+        return;
+    }
+}
+
+function showPriorityFilter() {
+    const priorityFilterContainer = document.querySelector(".priority-filter-container");
+    priorityFilterContainer.classList.add("show");
+
+    // Cerrar el cuadro de selección de prioridad
+    const closeButton = document.querySelector(".close-priority-filter");
+    closeButton.addEventListener("click", () => {
+        priorityFilterContainer.classList.remove("show");
+    });
+
+    // Aplicar el filtro de prioridad
+    const applyPriorityFilterButton = document.getElementById("apply-priority-filter");
+    applyPriorityFilterButton.addEventListener("click", () => {
+        const selectedPriority = document.getElementById("filter-priority").value;
+        if (selectedPriority) {    
+            filterTasksByPriority(selectedPriority);
+            changePriorityButtonColor(selectedPriority);
+        }
+        priorityFilterContainer.classList.remove("show"); // Cerrar el cuadro después de aplicar el filtro
+    });
+}
+
+function filterTasksByPriority(selectedPriority) {
+    const filteredTasks = tasks.filter(task => task.priority === selectedPriority);
+}
+
+function changePriorityButtonColor(priority) {
+    // Remover las clases de color actuales
+    orderByPriorityButton.classList.remove('alta', 'media', 'baja');
+    // Agregar la clase correcta según la prioridad
+    if (priority === "Alta") {
+        orderByPriorityButton.classList.add('alta');
+    } else if (priority === "Media") {
+        orderByPriorityButton.classList.add('media');
+    } else if (priority === "Baja") {
+        orderByPriorityButton.classList.add('baja');
+    } else {
+        orderByPriorityButton.classList.add('normal');
+        showAllTasks();
+    }
+}
+
+function showAllTasks() {
+    // Mostrar todas las tareas sin filtro
+    containerTasks.innerHTML = ''; // Limpiar las tareas actuales
+
+    tasks.forEach((task, index) => {
+        createTaskContainer(containerTasks, task, index);
+    });
 }
