@@ -12,6 +12,14 @@ body{
     font-family:'Times New Roman', Times, serif;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding-right: 20px; /* Añade espacio a la derecha del contenedor */
+}
+
 .for-complete, .complete{
     width: 100%;
     border-bottom: 1px solid black;
@@ -148,7 +156,7 @@ p {
     display: block;
 }
 
-.edit-info-container, .visualize-task-info-container, .add-info-container{
+.edit-info-container, .visualize-task-info-container{
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
@@ -259,18 +267,80 @@ textarea {
 
 
 .add-task-button {
-    background-color: #4CAF50; /* Color verde */
-    color: white; /* Texto blanco */
-    border: none; /* Sin borde */
-    padding: 10px 20px; /* Espaciado interno */
-    text-align: center; /* Centrar texto */
-    text-decoration: none; /* Sin subrayado */
-    display: inline-block; /* Para que funcione el padding */
-    font-size: 16px; /* Tamaño de fuente */
-    margin: 10px 0; /* Margen superior e inferior */
-    cursor: pointer; /* Cursor tipo puntero al pasar el mouse */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 .add-task-button:hover {
-    background-color: #45a049; /* Color verde más oscuro al pasar el mouse */
+    background-color: #45a049;
+}
+
+/* Estilos generales */
+.add-task-info-container {
+    position: fixed; /* Fija la posición del formulario */
+    top: 50%; /* Centra verticalmente */
+    left: 50%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Alinea al centro */
+    width: 300px; /* Ancho del formulario */
+    background-color: #ffffff; /* Color de fondo blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    z-index: 1000; /* Asegura que esté encima de otros elementos */
+    padding: 20px; /* Espaciado interno */
+    display: none; /* Por defecto oculto */
+}
+
+/* Títulos del formulario */
+.add-task-info-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Estilos de los inputs y textarea */
+.add-task-info-container input,
+.add-task-info-container textarea,
+.add-task-info-container select {
+    width: 95%; /* Ancho completo */
+    height: 40px; /* Altura uniforme */
+    margin-bottom: 15px; /* Espacio inferior */
+    border: 1px solid #ccc; /* Borde gris */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 0 10px; /* Espaciado interno */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+/* Estilo para el botón de crear tarea */
+.add-task-info-container button {
+    background-color: #007bff; /* Color de fondo azul */
+    color: #ffffff; /* Texto blanco */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    padding: 10px; /* Espaciado interno */
+    cursor: pointer; /* Cambia el cursor */
+    transition: background-color 0.3s; /* Transición suave */
+}
+
+.add-task-info-container button:hover {
+    background-color: #0056b3; /* Color de fondo más oscuro al pasar el mouse */
+}
+
+/* Botón de cerrar */
+.close-add-task {
+    position: absolute; /* Posición absoluta */
+    top: 10px; /* Desde la parte superior */
+    right: 10px; /* Desde la derecha */
+    background-color: transparent; /* Fondo transparente */
+    border: none; /* Sin borde */
+    font-size: 20px; /* Tamaño de fuente */
+    cursor: pointer; /* Cambia el cursor */
+}
+
+/* Animación para mostrar el formulario */
+.show {
+    display: flex; /* Muestra el formulario como flex */
 }
