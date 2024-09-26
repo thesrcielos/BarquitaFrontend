@@ -42,6 +42,8 @@ const containerTasksCompleted = document.querySelector(".container-tasks-complet
 const hideButtonNotCompletedTasks = document.querySelector(".hide-button-not-complete");
 const hideButtonCompletedTasks = document.querySelector(".hide-button-complete");
 const addTaskButton = document.querySelector(".add-task-button");
+const orderByPriorityButton = document.querySelector(".order-by-priority-button");
+const orderByDateButton = document.querySelector(".order-by-date-button");
 
 hideButtonNotCompletedTasks.addEventListener("click", ()=>{
     containerTasks.classList.toggle("hide");
@@ -59,6 +61,13 @@ addTaskButton.addEventListener("click", ()=>{
     showAddTaskForm();
 });
 
+orderByDateButton.addEventListener("click",  ()=>{
+    showDateFilter();
+});
+
+orderByPriorityButton.addEventListener("click", () => {
+    showPriorityFilter();
+});
 
 function createTaskContainer(containerTasks,task, id){
     const taskContainer = document.createElement("div");
@@ -326,4 +335,81 @@ function addNewTask(){
     } else {
         alert("Por favor, rellene todos los campos.");
     }
+}
+
+function showDateFilter() {
+    const dateFilterContainer = document.querySelector(".date-filter-container");
+    dateFilterContainer.classList.add("show");
+
+    // Cerrar el cuadro de fecha
+    const closeButton = document.querySelector(".close-date-filter");
+    closeButton.addEventListener("click", () => {
+        dateFilterContainer.classList.remove("show");
+    });
+
+    // Filtrar tareas por la fecha seleccionada
+    const filterByDateButton = document.getElementById("filter-by-date-button");
+    filterByDateButton.addEventListener("click", () => {
+        const selectedDate = document.getElementById("filter-date").value;
+        filterTasksByDate(selectedDate);
+        dateFilterContainer.classList.remove("show"); // Cerrar el cuadro después de filtrar
+    });
+}
+
+function filterTasksByDate(selectedDate) {
+    if (!selectedDate) {
+        alert("Por favor, seleccione una fecha.");
+        return;
+    }
+}
+
+function showPriorityFilter() {
+    const priorityFilterContainer = document.querySelector(".priority-filter-container");
+    priorityFilterContainer.classList.add("show");
+
+    // Cerrar el cuadro de selección de prioridad
+    const closeButton = document.querySelector(".close-priority-filter");
+    closeButton.addEventListener("click", () => {
+        priorityFilterContainer.classList.remove("show");
+    });
+
+    // Aplicar el filtro de prioridad
+    const applyPriorityFilterButton = document.getElementById("apply-priority-filter");
+    applyPriorityFilterButton.addEventListener("click", () => {
+        const selectedPriority = document.getElementById("filter-priority").value;
+        if (selectedPriority) {    
+            filterTasksByPriority(selectedPriority);
+            changePriorityButtonColor(selectedPriority);
+        }
+        priorityFilterContainer.classList.remove("show"); // Cerrar el cuadro después de aplicar el filtro
+    });
+}
+
+function filterTasksByPriority(selectedPriority) {
+    const filteredTasks = tasks.filter(task => task.priority === selectedPriority);
+}
+
+function changePriorityButtonColor(priority) {
+    // Remover las clases de color actuales
+    orderByPriorityButton.classList.remove('alta', 'media', 'baja');
+    // Agregar la clase correcta según la prioridad
+    if (priority === "Alta") {
+        orderByPriorityButton.classList.add('alta');
+    } else if (priority === "Media") {
+        orderByPriorityButton.classList.add('media');
+    } else if (priority === "Baja") {
+        orderByPriorityButton.classList.add('baja');
+    } else {
+        orderByPriorityButton.classList.add('normal');
+        showAllTasks();
+    }
+}
+
+function showAllTasks() {
+    // Mostrar todas las tareas sin filtro
+    containerTasks.innerHTML = ''; // Limpiar las tareas actuales
+
+    tasks.forEach((task, index) => {
+        createTaskContainer(containerTasks, task, index);
+    });
 }

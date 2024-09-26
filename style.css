@@ -191,8 +191,6 @@ p {
     cursor: pointer;
 }
 
-
-
 #editNameForm{
     justify-content: left; 
     align-items: left;
@@ -265,19 +263,30 @@ textarea {
     color: #ff4d4d;
 }
 
-
-.add-task-button {
-    background-color: #4CAF50;
+.buttons button {
     color: white;
     border: none;
+    border-radius: 10px;
     padding: 10px 20px;
     text-align: center;
     font-size: 16px;
     cursor: pointer;
 }
 
+.add-task-button {
+    background-color: #4CAF50;
+}
+
 .add-task-button:hover {
     background-color: #45a049;
+}
+
+.order-by-date-button {
+    background-color: #6082f0;
+}
+
+.order-by-date-button:hover {
+    background-color: #506bc6;
 }
 
 /* Estilos generales */
@@ -343,4 +352,86 @@ textarea {
 /* Animación para mostrar el formulario */
 .show {
     display: flex; /* Muestra el formulario como flex */
+}
+
+.date-filter-container {
+    display: none; /* Oculto inicialmente */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 2px solid #ccc;
+    z-index: 100;
+}
+
+.date-filter-container.show {
+    display: block; /* Mostrar cuando tenga la clase 'show' */
+}
+
+.priority-filter-container {
+    display: none; /* Oculto inicialmente */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 2px solid #ccc;
+    z-index: 100;
+}
+
+.priority-filter-container.show {
+    display: block; /* Mostrar cuando tenga la clase 'show' */
+}
+
+.order-by-priority-button {
+    background-color: #7734ff;
+}
+
+.order-by-priority-button:hover {
+    background-color: #602acc;
+}
+
+/* Estado normal del botón */
+.order-by-priority-button.normal {
+    background-color: #7734ff; /* Color de fondo inicial */
+    color: white; /* Color de texto inicial */
+}
+
+/* Estilo del hover para el botón en estado normal */
+.order-by-priority-button.normal:hover {
+    background-color: #602acc;
+    color: white; /* Color de texto al hacer hover */
+}
+
+.order-by-priority-button.alta {
+    background-color: red;
+    color: white;
+}
+
+.order-by-priority-button.alta:hover {
+    background-color: rgb(163, 0, 0);
+    color: white;
+}
+
+.order-by-priority-button.media {
+    background-color: yellow;
+    color: black;
+}
+
+.order-by-priority-button.media:hover {
+    background-color: rgb(193, 193, 0);
+    color: black;
+}
+
+.order-by-priority-button.baja {
+    background-color: green;
+    color: white;
+}
+
+.order-by-priority-button.baja:hover {
+    background-color: rgb(0, 100, 0);
+    color: white;
 }
