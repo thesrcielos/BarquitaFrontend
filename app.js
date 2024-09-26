@@ -75,9 +75,9 @@ function createTaskContainer(containerTasks,task, id){
 
     
     deleteButton.addEventListener("click", (event)=>{
+        event.stopPropagation();
         taskContainer.style.display = "none";
         containerTasks.removeChild(taskContainer);
-        event.stopPropagation();
     });
 
     addEventListenerToCheckBox(completedButton,id);
@@ -119,6 +119,7 @@ function getIdFromURL(){
 
 function addEventListenerToEditButton(editButton, id){
     editButton.addEventListener("click", (event)=>{
+        event.stopPropagation();
         selectedButtonMenu = true;
         //Put ?edit=id in the url
         window.history.pushState({}, '', `?edit=${id}`);
@@ -169,9 +170,9 @@ function createEditFormHTML(editInfoContainer) {
     let task = getTaskById(id);
     editInfoContainer.innerHTML = `
         <div class="form-container">
-            <h2>Editar Tarea</h2>
             <button class="close-edit">x</button>
             <form id="editNameForm">
+                <h2>Editar Tarea</h2>
                 <label for="name"><b>Nombre</b></label>
                 <input type="text" id="name" name="name" placeholder="Ingrese su nombre" value="${task.name}" required>    
                 <label for="description"><b>Descripción</b></label>

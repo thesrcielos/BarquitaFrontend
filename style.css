@@ -183,8 +183,11 @@ p {
     cursor: pointer;
 }
 
-
-
+#editNameForm h2{
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+}
 #editNameForm{
     justify-content: left; 
     align-items: left;
