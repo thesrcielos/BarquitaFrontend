@@ -184,16 +184,16 @@ function createEditFormHTML(editInfoContainer) {
     let task = getTaskById(id);
     editInfoContainer.innerHTML = `
         <div class="form-container">
-            <button class="close-edit">x</button>
+            <button class="close-edit">✖️</button>
             <form id="editNameForm">
                 <h2>Editar Tarea</h2>
-                <label for="name"><b>Nombre</b></label>
+                <label for="name">Nombre</label>
                 <input type="text" id="name" name="name" placeholder="Ingrese su nombre" value="${task.name}" required>    
-                <label for="description"><b>Descripción</b></label>
+                <label for="description">Descripción</label>
                 <textarea id="description" "name="description" rows="5" columns="40" required>${task.description}</textarea>
-                <label for="deadline"><b>Fecha y hora</b></label>
+                <label for="deadline">Fecha y hora</label>
                 <input type="datetime-local" id="deadline" name="deadline" required>
-                <label for="prioridad"><b>Prioridad</b></label>
+                <label for="prioridad">Prioridad</label>
                 <select id="options" name="priority" required>
                     <option value="" disabled selected>Seleccionar</option>
                     <option value="Baja">Baja</option>

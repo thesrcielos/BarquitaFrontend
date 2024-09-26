@@ -101,7 +101,6 @@ p {
     right: 0;
 }
 
-
 .menu-btn:hover{
     opacity: 0.8;
 }
@@ -113,6 +112,7 @@ p {
     background-color: white;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
+    z-index: 100;
 }
 
 .dropdown-content button, .checkbox-button {
@@ -175,6 +175,7 @@ p {
     align-items: center;
     display: flex;
     flex-direction: column;
+    border-radius: 8px;
 }
 
 .visualize-task-info{
@@ -192,16 +193,17 @@ p {
     text-align: center;
 }
 .form-container button, .visualize-task-info button {
-    padding: 10px 15px;
+    padding: 8px;
     border: none;
     border-radius: 4px;
     background-color: #007bff;
     color: white;
     cursor: pointer;
+    margin: 5px;
 }
 #editNameForm h2{
     margin: 0;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     padding: 0;
 }
 
@@ -220,7 +222,7 @@ p {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding-left: 2px;
-    width: 250px;
+    width: 300px;
 }
 
 .close-edit, .close-visualize{
@@ -235,7 +237,7 @@ p {
 }
 
 textarea {
-    width: 250px;
+    width: 300px;
     height: 100px; 
     resize: none; 
     margin-bottom: 10px;
