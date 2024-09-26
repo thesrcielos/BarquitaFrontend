@@ -9,7 +9,6 @@ body{
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family:'Times New Roman', Times, serif;
 }
 
 .header {
@@ -168,7 +167,17 @@ p {
     align-items: center;
 }
 
-.form-container, .visualize-task-info{
+.form-container{
+    position: fixed;
+    padding: 35px;
+    background-color: white;
+    justify-content: center; 
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.visualize-task-info{
     position: fixed;
     width: 60%;
     height: 100%;
@@ -194,7 +203,7 @@ p {
     margin: 0;
     margin-bottom: 10px;
     padding: 0;
-
+}
 
 #editNameForm{
     justify-content: left; 
@@ -296,17 +305,25 @@ textarea {
 
 /* Estilos generales */
 .add-task-info-container {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    display: none; /* Por defecto oculto */
+}
+
+.task-form{
     position: fixed; /* Fija la posición del formulario */
-    top: 50%; /* Centra verticalmente */
-    left: 50%; /* Centra horizontalmente */
-    transform: translate(-50%, -50%); /* Alinea al centro */
-    width: 300px; /* Ancho del formulario */
     background-color: #ffffff; /* Color de fondo blanco */
     border-radius: 8px; /* Bordes redondeados */
+    width: 350px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
     z-index: 1000; /* Asegura que esté encima de otros elementos */
     padding: 20px; /* Espaciado interno */
-    display: none; /* Por defecto oculto */
 }
 
 /* Títulos del formulario */
@@ -316,9 +333,9 @@ textarea {
 }
 
 /* Estilos de los inputs y textarea */
-.add-task-info-container input,
-.add-task-info-container textarea,
-.add-task-info-container select {
+.task-form input,
+.task-form textarea,
+.task-form select {
     width: 95%; /* Ancho completo */
     height: 40px; /* Altura uniforme */
     margin-bottom: 15px; /* Espacio inferior */

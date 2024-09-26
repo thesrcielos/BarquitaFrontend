@@ -279,14 +279,17 @@ function hoursFormat(hours){
 function showAddTaskForm() {
     const addTaskInformation = document.querySelector(".add-task-info-container"); 
     addTaskInformation.innerHTML = `
-        <button class="close-add-task">✖️</button>
         <div class="task-form">
+            <button class="close-add-task">✖️</button>
             <h2>Nueva Tarea</h2>
             <label for="task-name">Nombre:</label>
             <input type="text" id="task-name" placeholder="Ingrese el nombre de la tarea" required>
 
             <label for="task-description">Descripción:</label>
             <textarea id="task-description" placeholder="Ingrese la descripción de la tarea" rows="4" required></textarea>
+
+            <label for="deadline">Fecha y hora</label>
+            <input type="datetime-local" id="task-deadline" name="deadline" required>
 
             <label for="task-priority">Prioridad:</label>
             <select id="task-priority" required>
@@ -315,10 +318,10 @@ function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
     const priority = document.getElementById("task-priority").value;
-    const date = new Date().toLocaleDateString();
+    const date = dateFormat(document.getElementById("task-deadline").value);
     const addTaskInformation = document.querySelector(".add-task-info-container");
     
-    if (name && description && priority) {
+    if (name && description && priority && date) {
         const newTask = {
             name: name,
             description: description,
@@ -332,7 +335,7 @@ function addNewTask(){
 
         // Limpiar el formulario
         addTaskInformation.innerHTML = '';
-        addTaskInformation.classList.remove("show");
+        addTaskInformation.classList.toggle("show");
     } else {
         alert("Por favor, rellene todos los campos.");
     }
