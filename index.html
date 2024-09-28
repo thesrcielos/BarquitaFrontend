@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Task Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     
-    <h1>Mis tareas</h1>
+    <div class="header">
+        <h1>Mis tareas</h1>
+        <div class="buttons">
+            <button class="order-by-priority-button">Ordenar por prioridad 🔝</button>
+            <button class="order-by-date-button">Filtrar por fecha 📆</button>
+            <button class="add-task-button">Agregar tarea ➕</button>
+        </div>    
+    </div>
     <div class="tasks-not-completed">
         <div class="header-not-completed">
             <button class="hide-button-not-complete">🔻</button>
@@ -27,7 +34,27 @@
         <div class="container-tasks-completed"></div>
     </div>
     <div class="edit-info-container"></div>
+    <div class="add-task-info-container"></div>
     <div class="visualize-task-info-container"></div>
+    <div class="date-filter-container"></div>
+        <button class="close-date-filter">✖️</button>
+        <h2>Seleccionar Fecha</h2>
+        <label for="filter-date">Fecha:</label>
+        <input type="date" id="filter-date">
+        <button id="filter-by-date-button">Filtrar</button>
+    </div>
+    <div class="priority-filter-container">
+        <button class="close-priority-filter">✖️</button>
+        <h2>Seleccionar Prioridad</h2>
+        <select id="filter-priority">
+            <option value="" disabled selected>Seleccionar prioridad</option>
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+            <option value="Ninguna">Ninguna</option>
+        </select>
+        <button id="apply-priority-filter">Aplicar filtro</button>
+    </div>
     <script type="module" src="app.js"></script>
     <script type="module" src="connectionBackend.js"></script>
 </body>
