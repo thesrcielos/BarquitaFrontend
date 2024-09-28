@@ -9,10 +9,9 @@ export async function getAllTasksByState(state) {
         if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.statusText);
         }
-        const data = await response.json();
-        return JSON.parse(data);
+        return await response.json();
+
     } catch (e) {
-        console.log(e);
         throw e;
     }
 }
@@ -29,8 +28,7 @@ export async function addTask(task){
         if (!response.ok) {
             throw new Error('Network response was not ok: ' + response.statusText);
         }
-        const data = await response.json();
-        return JSON.parse(data);
+        return await response.json();
     } catch (e) {
         console.log(e);
         throw e;
@@ -65,13 +63,24 @@ export async function updateTask(task){
             },
             body: JSON.stringify(task)
         });
-        if (!response.ok) {
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        const data = await response.json();
-        return JSON.parse(data);
+        let taskR = await response.json();
     } catch (e) {
         console.log(e);
-        throw e;
     }
+}
+
+export async function updateTaskState(id){
+    try {
+        const response = await fetch(`http://localhost:8080/changeStateTask?id=${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        let taskR = await response.json();
+    }
+ catch (e) {
+    console.log(e);
+}
+
 }

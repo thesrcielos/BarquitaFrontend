@@ -1,5 +1,6 @@
-import {getAllTasksByState, addTask, deleteTask, updateTask} from './connectionBackend.js'
-const tasks = getAllTasksByState(false);
+import {getAllTasksByState, addTask, deleteTask, updateTask, updateTaskState} from './connectionBackend.js'
+let tasks = await getAllTasksByState(false);
+let taskCompleted = await getAllTasksByState(true);
 
 const containerTasks = document.querySelector(".container-tasks");
 const containerTasksCompleted = document.querySelector(".container-tasks-completed");
@@ -16,10 +17,13 @@ hideButtonNotCompletedTasks.addEventListener("click", ()=>{
 hideButtonCompletedTasks.addEventListener("click", ()=>{
     containerTasksCompleted.classList.toggle("hide");
 });
-
 tasks.forEach((task, index)=>{
     createTaskContainer(containerTasks,task, index);
 });
+taskCompleted.forEach((task, index)=>{
+    createTaskContainer(containerTasksCompleted, task, -1*index-1);
+})
+
 
 addTaskButton.addEventListener("click", ()=>{
     showAddTaskForm();
@@ -52,11 +56,13 @@ function createTaskContainer(containerTasks,task, id){
     });
 
     
-    deleteButton.addEventListener("click", (event)=>{
+    deleteButton.addEventListener("click", async (event)=>{
         event.stopPropagation();
         taskContainer.style.display = "none";
         containerTasks.removeChild(taskContainer);
-        event.stopPropagation();
+        let id = deleteButton.classList[1].substring(10);
+        let taskId = getTaskId(id);
+        await deleteTask(taskId);
     });
 
     addEventListenerToCheckBox(completedButton,id);
@@ -66,7 +72,7 @@ function createTaskContainer(containerTasks,task, id){
     return taskContainer;
 }
 
-function handleEventSubmitEditInfo(event){
+async function handleEventSubmitEditInfo(event){
     event.preventDefault();
     const form = event.target;  // Forms that triggers the event
     const formData = new FormData(form);
@@ -74,15 +80,13 @@ function handleEventSubmitEditInfo(event){
     let task = tasks[id];
     task.name = formData.get('name');
     task.description = document.querySelector("#description").value;
-    task.date = dateFormat(formData.get('deadline'));
-    task.priority = formData.get('priority');
-
-    const taskName = document.querySelector(`.task-name${id}`);
-    const editInfoContainer = document.querySelector(".edit-info-container");
-    editInfoContainer.style.display = "none";
-
-    //Delete ?edit=id of the url
+    task.deadline = formData.get('deadline');
+    task.priority = formData.get('priority').toUpperCase();
+    await updateTask(task);
     deleteEditFromUrl();
+    location.reload(true);
+    //Delete ?edit=id of the url
+
     editTaskInfo(id);
 }
 
@@ -99,7 +103,6 @@ function getIdFromURL(){
 function addEventListenerToEditButton(editButton, id){
     editButton.addEventListener("click", (event)=>{
         event.stopPropagation();
-        selectedButtonMenu = true;
         //Put ?edit=id in the url
         window.history.pushState({}, '', `?edit=${id}`);
         event.stopPropagation();
@@ -120,29 +123,37 @@ function addEventListenerToEditButton(editButton, id){
 
         const editNameForm = document.querySelector("#editNameForm");
         editNameForm.addEventListener("submit",handleEventSubmitEditInfo);
-        selectedButtonMenu = false;
     });
 }
 
 function addEventListenerToCheckBox(checkbox, id){
-    checkbox.addEventListener("change",(event)=>{
-
-        const container = document.querySelector(".visualize-task-info-container");
-        container.style.display="none";
-        const taskElement = document.querySelector(`.task-container${id}`);
-        const dropdown = document.querySelector(`.dropdown-content${id}`);
-        taskElement.classList.toggle("hide");
-        if(checkbox.checked){
-            containerTasks.removeChild(taskElement);
-            containerTasksCompleted.appendChild(taskElement);
-        }else{
-            containerTasksCompleted.removeChild(taskElement);
-            containerTasks.appendChild(taskElement);
+    checkbox.addEventListener("change",async (event) => {
+            let taskId = getTaskId(id);
+            await updateTaskState(taskId);
+            location.reload(true);
+            const container = document.querySelector(".visualize-task-info-container");
+            container.style.display = "none";
+            const taskElement = document.querySelector(`.task-container${id}`);
+            const dropdown = document.querySelector(`.dropdown-content${id}`);
+            taskElement.classList.toggle("hide");
+            if (checkbox.checked) {
+                containerTasks.removeChild(taskElement);
+                containerTasksCompleted.appendChild(taskElement);
+            } else {
+                containerTasksCompleted.removeChild(taskElement);
+                containerTasks.appendChild(taskElement);
+            }
+            taskElement.classList.toggle("hide");
+            dropdown.classList.toggle("visible");
         }
-        taskElement.classList.toggle("hide");
-        dropdown.classList.toggle("visible");
-    }
     );
+}
+
+function getTaskId(id){
+    if (id < 0) {
+       return taskCompleted[-1 - 1 * id].id;
+    }
+    return tasks[id].id;
 }
 function createEditFormHTML(editInfoContainer) {
     let id = getIdFromURL();
@@ -179,7 +190,7 @@ function createTaskHTML(taskContainer, task, id){
     <button class="menu-btn menu-btn${id}">⋮</button>
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
-        <p class="task-date${id}">${task.date}</p>
+        <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-priority${id}">${task.priority}</p>
     <div/>
     <div class="dropdown-content dropdown-content${id}">
@@ -279,23 +290,25 @@ function showAddTaskForm() {
     createTaskButton.addEventListener("click", addNewTask);
 }
 
-function addNewTask(){
+async function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
     const priority = document.getElementById("task-priority").value;
-    const date = dateFormat(document.getElementById("task-deadline").value);
+    const date = document.getElementById("task-deadline").value;
     const addTaskInformation = document.querySelector(".add-task-info-container");
     
     if (name && description && priority && date) {
+        console.log(date)
         const newTask = {
             name: name,
             description: description,
-            date: date,
-            priority: priority
+            deadline: date,
+            state: false,
+            priority: priority.toUpperCase()
         };
-        
-        tasks.push(newTask);
+        await addTask(newTask);
         const taskId = tasks.length - 1;
+
         createTaskContainer(containerTasks, newTask, taskId);
 
         // Limpiar el formulario
