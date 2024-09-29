@@ -1,5 +1,6 @@
-import {getAllTasksByState, addTask, deleteTask, updateTask} from './connectionBackend.js'
-const tasks = getAllTasksByState(false);
+import {getAllTasksByState, addTask, deleteTask, updateTask, updateTaskState} from './connectionBackend.js'
+const tasks = await getAllTasksByState(false);
+const tasksCompleted = await getAllTasksByState(true);
 
 const containerTasks = document.querySelector(".container-tasks");
 const containerTasksCompleted = document.querySelector(".container-tasks-completed");
@@ -16,9 +17,12 @@ hideButtonNotCompletedTasks.addEventListener("click", ()=>{
 hideButtonCompletedTasks.addEventListener("click", ()=>{
     containerTasksCompleted.classList.toggle("hide");
 });
+tasks.forEach((task,index)=>{
+    createTaskContainer(containerTasks,task,index);
+});
 
-tasks.forEach((task, index)=>{
-    createTaskContainer(containerTasks,task, index);
+tasksCompleted.forEach((task,index)=>{
+    createTaskContainer(containerTasksCompleted,task,-1-1*index);
 });
 
 addTaskButton.addEventListener("click", ()=>{
@@ -52,13 +56,10 @@ function createTaskContainer(containerTasks,task, id){
     });
 
     
-    deleteButton.addEventListener("click", (event)=>{
-        event.stopPropagation();
-        taskContainer.style.display = "none";
-        containerTasks.removeChild(taskContainer);
-        event.stopPropagation();
-    });
-
+    if(id < 0){
+        completedButton.checked = true;
+    }
+    addEventDeleteButton(deleteButton,taskContainer);
     addEventListenerToCheckBox(completedButton,id);
     addEventListenerToEditButton(editButton,id);
     addEventListenerToTaskInfo(taskInfo,id);
@@ -66,18 +67,33 @@ function createTaskContainer(containerTasks,task, id){
     return taskContainer;
 }
 
-function handleEventSubmitEditInfo(event){
+function addEventDeleteButton(deleteButton, taskContainer){
+    deleteButton.addEventListener("click", async(event)=>{
+        event.stopPropagation();  
+        let id = deleteButton.classList[1].substring(10);
+        let taskId = getTaskById(id).id;
+        if(id>=0){
+            containerTasks.removeChild(taskContainer);
+        }else{
+            containerTasksCompleted.removeChild(taskContainer);
+        }
+        await deleteTask(taskId);
+    });
+}
+async function handleEventSubmitEditInfo(event){
     event.preventDefault();
     const form = event.target;  // Forms that triggers the event
     const formData = new FormData(form);
     const id = getIdFromURL();
-    let task = tasks[id];
+    let task = getTaskById(id);
+
     task.name = formData.get('name');
     task.description = document.querySelector("#description").value;
-    task.date = dateFormat(formData.get('deadline'));
-    task.priority = formData.get('priority');
+    task.deadline = formData.get('deadline');
+    task.priority = formData.get('priority').toUpperCase();
 
-    const taskName = document.querySelector(`.task-name${id}`);
+    await updateTask(task);
+
     const editInfoContainer = document.querySelector(".edit-info-container");
     editInfoContainer.style.display = "none";
 
@@ -99,7 +115,6 @@ function getIdFromURL(){
 function addEventListenerToEditButton(editButton, id){
     editButton.addEventListener("click", (event)=>{
         event.stopPropagation();
-        selectedButtonMenu = true;
         //Put ?edit=id in the url
         window.history.pushState({}, '', `?edit=${id}`);
         event.stopPropagation();
@@ -120,29 +135,15 @@ function addEventListenerToEditButton(editButton, id){
 
         const editNameForm = document.querySelector("#editNameForm");
         editNameForm.addEventListener("submit",handleEventSubmitEditInfo);
-        selectedButtonMenu = false;
     });
 }
 
 function addEventListenerToCheckBox(checkbox, id){
-    checkbox.addEventListener("change",(event)=>{
-
-        const container = document.querySelector(".visualize-task-info-container");
-        container.style.display="none";
-        const taskElement = document.querySelector(`.task-container${id}`);
-        const dropdown = document.querySelector(`.dropdown-content${id}`);
-        taskElement.classList.toggle("hide");
-        if(checkbox.checked){
-            containerTasks.removeChild(taskElement);
-            containerTasksCompleted.appendChild(taskElement);
-        }else{
-            containerTasksCompleted.removeChild(taskElement);
-            containerTasks.appendChild(taskElement);
-        }
-        taskElement.classList.toggle("hide");
-        dropdown.classList.toggle("visible");
-    }
-    );
+    checkbox.addEventListener("change",async (event)=>{
+        let taskId = getTaskById(id).id;
+        await updateTaskState(taskId);
+        location.reload(true);
+    });
 }
 function createEditFormHTML(editInfoContainer) {
     let id = getIdFromURL();
@@ -171,7 +172,7 @@ function createEditFormHTML(editInfoContainer) {
     `;
 }
 function getTaskById(id){
-    return tasks[id];
+    return id >= 0 ? tasks[id] : tasksCompleted[-1-1*id];
 }
 
 function createTaskHTML(taskContainer, task, id){
@@ -179,7 +180,7 @@ function createTaskHTML(taskContainer, task, id){
     <button class="menu-btn menu-btn${id}">⋮</button>
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
-        <p class="task-date${id}">${task.date}</p>
+        <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-priority${id}">${task.priority}</p>
     <div/>
     <div class="dropdown-content dropdown-content${id}">
@@ -199,7 +200,7 @@ function editTaskInfo(id){
     const taskDate = document.querySelector(`.task-date${id}`);
     const taskPriority = document.querySelector(`.task-priority${id}`);
     taskName.textContent = task.name;
-    taskDate.textContent = task.date;
+    taskDate.textContent = dateFormat(task.deadline);
     taskPriority.textContent = task.priority;
 
 }
@@ -214,7 +215,7 @@ function addEventListenerToTaskInfo(taskInfo,id){
                 <button class="close-visualize">x</button>
                 <p>Nombre: ${task.name}</p>
                 <p>Descripción: ${task.description}</p>
-                <p>Fecha límite: ${task.date}</p>
+                <p>Fecha límite: ${dateFormat(task.deadline)}</p>
                 <p>Prioridad: ${task.priority}</p>
             </div>
         `;
@@ -279,21 +280,22 @@ function showAddTaskForm() {
     createTaskButton.addEventListener("click", addNewTask);
 }
 
-function addNewTask(){
+async function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
     const priority = document.getElementById("task-priority").value;
-    const date = dateFormat(document.getElementById("task-deadline").value);
+    const date = document.getElementById("task-deadline").value;
     const addTaskInformation = document.querySelector(".add-task-info-container");
     
     if (name && description && priority && date) {
         const newTask = {
             name: name,
             description: description,
-            date: date,
-            priority: priority
+            deadline: date,
+            state: false,
+            priority: priority.toUpperCase()
         };
-        
+        await addTask(newTask);
         tasks.push(newTask);
         const taskId = tasks.length - 1;
         createTaskContainer(containerTasks, newTask, taskId);
@@ -372,13 +374,4 @@ function changePriorityButtonColor(priority) {
         orderByPriorityButton.classList.add('normal');
         showAllTasks();
     }
-}
-
-function showAllTasks() {
-    // Mostrar todas las tareas sin filtro
-    containerTasks.innerHTML = ''; // Limpiar las tareas actuales
-
-    tasks.forEach((task, index) => {
-        createTaskContainer(containerTasks, task, index);
-    });
 }
