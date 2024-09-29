@@ -295,11 +295,9 @@ function showAddTaskForm() {
 }
 
 async function addNewTask(){
-async function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
     const priority = document.getElementById("task-priority").value;
-    const date = document.getElementById("task-deadline").value;
     const date = document.getElementById("task-deadline").value;
     const addTaskInformation = document.querySelector(".add-task-info-container");
     
@@ -308,9 +306,6 @@ async function addNewTask(){
         const newTask = {
             name: name,
             description: description,
-            deadline: date,
-            state: false,
-            priority: priority.toUpperCase()
             deadline: date,
             state: false,
             priority: priority.toUpperCase()
