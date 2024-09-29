@@ -117,7 +117,6 @@ function addEventListenerToEditButton(editButton, id){
         event.stopPropagation();
         //Put ?edit=id in the url
         window.history.pushState({}, '', `?edit=${id}`);
-        event.stopPropagation();
         
         //Make dropdown content invivible
         const dropdown = document.querySelector(`.dropdown-content${id}`);
@@ -140,6 +139,9 @@ function addEventListenerToEditButton(editButton, id){
 
 function addEventListenerToCheckBox(checkbox, id){
     checkbox.addEventListener("change",async (event)=>{
+        event.stopPropagation();
+        const container = document.querySelector(".visualize-task-info-container");
+        container.style.display = "none";
         let taskId = getTaskById(id).id;
         await updateTaskState(taskId);
         location.reload(true);
