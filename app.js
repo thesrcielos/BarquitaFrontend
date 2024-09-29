@@ -1,7 +1,11 @@
+// Importa las funciones necesarias para manejar tareas desde el backend
 import {getAllTasksByState, addTask, deleteTask, updateTask, updateTaskState} from './connectionBackend.js'
-const tasks = await getAllTasksByState(false);
-const tasksCompleted = await getAllTasksByState(true);
+// Obtiene las tareas no completadas y completadas desde el backend
+let tasks = await getAllTasksByState(false);
+let tasksCompleted = await getAllTasksByState(true);
 
+
+// Referencias a elementos del DOM
 const containerTasks = document.querySelector(".container-tasks");
 const containerTasksCompleted = document.querySelector(".container-tasks-completed");
 const hideButtonNotCompletedTasks = document.querySelector(".hide-button-not-complete");
@@ -10,62 +14,74 @@ const addTaskButton = document.querySelector(".add-task-button");
 const orderByPriorityButton = document.querySelector(".order-by-priority-button");
 const orderByDateButton = document.querySelector(".order-by-date-button");
 
+// Oculta o muestra las tareas no completadas al hacer clic en el botón correspondiente
 hideButtonNotCompletedTasks.addEventListener("click", ()=>{
     containerTasks.classList.toggle("hide");
 });
 
+// Oculta o muestra las tareas completadas al hacer clic en el botón correspondiente
 hideButtonCompletedTasks.addEventListener("click", ()=>{
     containerTasksCompleted.classList.toggle("hide");
 });
+
+// Crea los contenedores de tareas no completadas
 tasks.forEach((task,index)=>{
     createTaskContainer(containerTasks,task,index);
 });
 
+// Crea los contenedores de tareas completadas
 tasksCompleted.forEach((task,index)=>{
     createTaskContainer(containerTasksCompleted,task,-1-1*index);
 });
 
-
+// Muestra el formulario para agregar una nueva tarea al hacer clic en el botón correspondiente
 addTaskButton.addEventListener("click", ()=>{
     showAddTaskForm();
 });
 
+// Muestra el filtro por fecha al hacer clic en el botón de ordenar por fecha
 orderByDateButton.addEventListener("click",  ()=>{
     showDateFilter();
 });
 
+// Muestra el filtro por prioridad al hacer clic en el botón de ordenar por prioridad
 orderByPriorityButton.addEventListener("click", () => {
     showPriorityFilter();
 });
 
-function createTaskContainer(containerTasks,task, id){
-    const taskContainer = document.createElement("div");
+// Función que crea el contenedor para cada tarea
+function createTaskContainer(containerTasks, task, id){
+    const taskContainer = document.createElement("div"); // Crea un div para la tarea
     taskContainer.classList.add(`task-container`);
     taskContainer.classList.add(`task-container${id}`);
-    createTaskHTML(taskContainer, task, id);
-    containerTasks.appendChild(taskContainer);
+    createTaskHTML(taskContainer, task, id);  // Agrega el contenido HTML de la tarea
+    containerTasks.appendChild(taskContainer);  // Añade la tarea al contenedor de tareas
 
+    // Referencias a los botones y elementos interactivos dentro de la tarea
     const menuItemButton = document.querySelector(`.menu-btn${id}`);
     const dropdownContent = document.querySelector(`.dropdown-content${id}`);
     const editButton = document.querySelector(`.edit-btn${id}`);
     const deleteButton = document.querySelector(`.delete-btn${id}`); 
     const completedButton = document.querySelector(`.myCheckbox${id}`);
-    const taskInfo = document.querySelector(`.task-info${id}`);
+    const taskInfo = document.querySelector(`.task-info${id}`)
 
+    // Evento para mostrar el menú de opciones de la tarea
     menuItemButton.addEventListener("click",()=>{
         dropdownContent.classList.toggle("visible");
     });
 
-    
+
+    //Si la tarea esta completada marcar su checkbox como checked
     if(id < 0){
         completedButton.checked = true;
     }
+   // Añade eventos a el boton de eliminar tarea, la casilla de completado, botón de edición, y la información de la tarea
     addEventDeleteButton(deleteButton,taskContainer);
     addEventListenerToCheckBox(completedButton,id);
     addEventListenerToEditButton(editButton,id);
     addEventListenerToTaskInfo(taskInfo,id);
 
-    return taskContainer;
+    return taskContainer;  // Retorna el contenedor de la tarea
 }
 
 function addEventDeleteButton(deleteButton, taskContainer){
@@ -103,41 +119,49 @@ async function handleEventSubmitEditInfo(event){
     editTaskInfo(id);
 }
 
+// Elimina el parámetro de edición de la URL
 function deleteEditFromUrl(){
-    let currentUrl = window.location.href; 
-    let newUrl = currentUrl.split('?')[0];
-    window.history.replaceState(null, '', newUrl);
-}
-function getIdFromURL(){
-    const params = new URLSearchParams(window.location.search);
-    return Number(params.get('edit')); 
+    let currentUrl = window.location.href;
+    let newUrl = currentUrl.split('?')[0];  // Separa la URL por el parámetro de edición
+    window.history.replaceState(null, '', newUrl);  // Reemplaza la URL con la nueva sin el parámetro
 }
 
+// Obtiene el ID de la tarea desde la URL
+function getIdFromURL(){
+    const params = new URLSearchParams(window.location.search);
+    return Number(params.get('edit'));  // Retorna el ID en formato numérico
+}
+
+// Añade un evento al botón de edición de la tarea
 function addEventListenerToEditButton(editButton, id){
     editButton.addEventListener("click", (event)=>{
         event.stopPropagation();
         //Put ?edit=id in the url
         window.history.pushState({}, '', `?edit=${id}`);
         
-        //Make dropdown content invivible
+        // Oculta el contenido del menú desplegable
         const dropdown = document.querySelector(`.dropdown-content${id}`);
         dropdown.classList.toggle("visible");
 
+        // Muestra el formulario de edición
         const editInfoContainer = document.querySelector(".edit-info-container");
         editInfoContainer.style.display = "flex";
         createEditFormHTML(editInfoContainer);
 
+        // Cierra el formulario de edición al hacer clic en el botón de cerrar
         const closeButton = document.querySelector(".close-edit");
         closeButton.addEventListener("click", ()=>{
             editInfoContainer.style.display ="none";
             deleteEditFromUrl();
         });
 
+        // Añade un evento al formulario de edición para manejar el envío
         const editNameForm = document.querySelector("#editNameForm");
         editNameForm.addEventListener("submit",handleEventSubmitEditInfo);
     });
 }
 
+// Añade un evento a la casilla de verificación para marcar una tarea como completada
 function addEventListenerToCheckBox(checkbox, id){
     checkbox.addEventListener("change",async (event)=>{
         event.stopPropagation();
@@ -149,6 +173,14 @@ function addEventListenerToCheckBox(checkbox, id){
     });
 }
 
+// Obtiene una tarea por su ID
+function getTaskId(id){
+    if (id < 0) {
+       return taskCompleted[-1 - 1 * id].id;
+    }
+    return tasks[id].id;
+}
+// Crea el formulario HTML para editar una tarea
 function createEditFormHTML(editInfoContainer) {
     let id = getIdFromURL();
     let task = getTaskById(id);
@@ -175,10 +207,13 @@ function createEditFormHTML(editInfoContainer) {
         </div>
     `;
 }
+
+// Función que obtiene el id de una tarea
 function getTaskById(id){
     return id >= 0 ? tasks[id] : tasksCompleted[-1-1*id];
 }
 
+// Función que crea el HTML de una tarea específica
 function createTaskHTML(taskContainer, task, id){
     taskContainer.innerHTML = `
     <button class="menu-btn menu-btn${id}">⋮</button>
@@ -198,6 +233,7 @@ function createTaskHTML(taskContainer, task, id){
 `;
 }
 
+// Función para editar la información de una tarea con un ID específico
 function editTaskInfo(id){
     let task = getTaskById(id);
     const taskName = document.querySelector(`.task-name${id}`);
@@ -206,14 +242,16 @@ function editTaskInfo(id){
     taskName.textContent = task.name;
     taskDate.textContent = dateFormat(task.deadline);
     taskPriority.textContent = task.priority;
-
 }
 
-function addEventListenerToTaskInfo(taskInfo,id){
+// Función para agregar un evento de clic en el contenedor de la tarea
+function addEventListenerToTaskInfo(taskInfo, id) {
     taskInfo.addEventListener("click", ()=>{
         let task = getTaskById(id);
         const container = document.querySelector(".visualize-task-info-container");
         container.style.display="flex";
+
+        // Genera el HTML para visualizar los detalles de la tarea
         container.innerHTML = `
             <div class="visualize-task-info">
                 <button class="close-visualize">x</button>
@@ -223,29 +261,34 @@ function addEventListenerToTaskInfo(taskInfo,id){
                 <p>Prioridad: ${task.priority}</p>
             </div>
         `;
+        
+        // Agrega evento para cerrar el modal de visualización de la tarea
         const closeButton = document.querySelector(".close-visualize");
         closeButton.addEventListener("click",()=>{
             container.style.display="none";
         });
-    ;}
-        
-);
+    });
 }
 
+// Función para formatear la fecha en formato día/mes/año - horas:minutos
 function dateFormat(date){
     let format = new Date(date);
     return `${format.getDate()}/${format.getMonth()+1}/${format.getFullYear()} 
             - ${hoursFormat(format.getHours().toString())}:${minuteFormat(format.getMinutes().toString())}`;
 }
 
+// Función para formatear los minutos a dos dígitos
 function minuteFormat(minutes){
     return minutes.length > 1 ? minutes : "0"+minutes;
 }
 
+// Función para formatear las horas a dos dígitos
 function hoursFormat(hours){
     return hours.length > 1 ? hours : "0"+hours;
 }
 
+
+// Muestra el formulario para agregar una nueva tarea
 function showAddTaskForm() {
     const addTaskInformation = document.querySelector(".add-task-info-container"); 
     addTaskInformation.innerHTML = `
@@ -284,6 +327,7 @@ function showAddTaskForm() {
     createTaskButton.addEventListener("click", addNewTask);
 }
 
+// Función que crea la nueva tarea, valida los datos y la agrega  a la lista
 async function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
@@ -314,6 +358,7 @@ async function addNewTask(){
     }
 }
 
+// Muestra el filtro de fecha para ordenar las tareas
 function showDateFilter() {
     const dateFilterContainer = document.querySelector(".date-filter-container");
     dateFilterContainer.classList.add("show");
@@ -333,6 +378,7 @@ function showDateFilter() {
     });
 }
 
+// Verificar el campo de fecha sea correctamente lleno
 function filterTasksByDate(selectedDate) {
     if (!selectedDate) {
         alert("Por favor, seleccione una fecha.");
@@ -340,6 +386,7 @@ function filterTasksByDate(selectedDate) {
     }
 }
 
+// Muestra el cuadro de selección de filtro por prioridad
 function showPriorityFilter() {
     const priorityFilterContainer = document.querySelector(".priority-filter-container");
     priorityFilterContainer.classList.add("show");
@@ -362,10 +409,13 @@ function showPriorityFilter() {
     });
 }
 
+
+// Filtra las tareas según la prioridad seleccionada
 function filterTasksByPriority(selectedPriority) {
     const filteredTasks = tasks.filter(task => task.priority === selectedPriority);
 }
 
+// Cambia el color del botón de filtro de prioridad según la prioridad seleccionada
 function changePriorityButtonColor(priority) {
     // Remover las clases de color actuales
     orderByPriorityButton.classList.remove('alta', 'media', 'baja');
