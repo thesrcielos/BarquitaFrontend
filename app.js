@@ -1,9 +1,9 @@
 // Importa las funciones necesarias para manejar tareas desde el backend
 import {getAllTasksByState, addTask, deleteTask, updateTask, updateTaskState} from './connectionBackend.js'
-
 // Obtiene las tareas no completadas y completadas desde el backend
 let tasks = await getAllTasksByState(false);
-let taskCompleted = await getAllTasksByState(true);
+let tasksCompleted = await getAllTasksByState(true);
+
 
 // Referencias a elementos del DOM
 const containerTasks = document.querySelector(".container-tasks");
@@ -25,12 +25,12 @@ hideButtonCompletedTasks.addEventListener("click", ()=>{
 });
 
 // Crea los contenedores de tareas no completadas
-tasks.forEach((task, index)=>{
-    createTaskContainer(containerTasks,task, index);
+tasks.forEach((task,index)=>{
+    createTaskContainer(containerTasks,task,index);
 });
 
 // Crea los contenedores de tareas completadas
-taskCompleted.forEach((task, index)=>{
+tasksCompleted.forEach((task, index)=>{
     createTaskContainer(containerTasksCompleted, task, -1*index-1);
 })
 
@@ -70,17 +70,13 @@ function createTaskContainer(containerTasks, task, id){
         dropdownContent.classList.toggle("visible");
     });
 
-    // Evento para eliminar la tarea al hacer clic en el botón eliminar
-    deleteButton.addEventListener("click", async (event)=>{
-        event.stopPropagation();
-        taskContainer.style.display = "none";
-        containerTasks.removeChild(taskContainer);
-        let id = deleteButton.classList[1].substring(10);
-        let taskId = getTaskId(id);
-        await deleteTask(taskId);
-    });
 
-    // Añade eventos a la casilla de completado, botón de edición, y la información de la tarea
+    //Si la tarea esta completada marcar su checkbox como checked
+    if(id < 0){
+        completedButton.checked = true;
+    }
+   // Añade eventos a el boton de eliminar tarea, la casilla de completado, botón de edición, y la información de la tarea
+    addEventDeleteButton(deleteButton,taskContainer);
     addEventListenerToCheckBox(completedButton,id);
     addEventListenerToEditButton(editButton,id);
     addEventListenerToTaskInfo(taskInfo,id);
@@ -88,22 +84,39 @@ function createTaskContainer(containerTasks, task, id){
     return taskContainer;  // Retorna el contenedor de la tarea
 }
 
-// Evento que maneja el envío del formulario de edición de la tarea
+function addEventDeleteButton(deleteButton, taskContainer){
+    deleteButton.addEventListener("click", async(event)=>{
+        event.stopPropagation();  
+        let id = deleteButton.classList[1].substring(10);
+        let taskId = getTaskById(id).id;
+        if(id>=0){
+            containerTasks.removeChild(taskContainer);
+        }else{
+            containerTasksCompleted.removeChild(taskContainer);
+        }
+        await deleteTask(taskId);
+    });
+}
 async function handleEventSubmitEditInfo(event){
     event.preventDefault();
-    const form = event.target;  // Formulario que desencadena el evento
-    const formData = new FormData(form);  // Obtiene los datos del formulario
-    const id = getIdFromURL();  // Obtiene el ID de la tarea desde la URL
-    let task = tasks[id];  // Obtiene la tarea correspondiente al ID
-    task.name = formData.get('name');  // Actualiza el nombre de la tarea
-    task.description = document.querySelector("#description").value;  // Actualiza la descripción
-    task.deadline = formData.get('deadline');  // Actualiza la fecha límite
-    task.priority = formData.get('priority').toUpperCase();  // Actualiza la prioridad
-    await updateTask(task);  // Llama a la función de actualización de la tarea en el backend
-    deleteEditFromUrl();  // Elimina el parámetro de edición de la URL
-    location.reload(true);  // Recarga la página para reflejar los cambios
+    const form = event.target;  // Forms that triggers the event
+    const formData = new FormData(form);
+    const id = getIdFromURL();
+    let task = getTaskById(id);
 
-    editTaskInfo(id);  // Edita la información de la tarea en la interfaz
+    task.name = formData.get('name');
+    task.description = document.querySelector("#description").value;
+    task.deadline = formData.get('deadline');
+    task.priority = formData.get('priority').toUpperCase();
+
+    await updateTask(task);
+
+    const editInfoContainer = document.querySelector(".edit-info-container");
+    editInfoContainer.style.display = "none";
+
+    //Delete ?edit=id of the url
+
+    editTaskInfo(id);
 }
 
 // Elimina el parámetro de edición de la URL
@@ -123,8 +136,8 @@ function getIdFromURL(){
 function addEventListenerToEditButton(editButton, id){
     editButton.addEventListener("click", (event)=>{
         event.stopPropagation();
-        window.history.pushState({}, '', `?edit=${id}`);  // Agrega el parámetro de edición a la URL
-        event.stopPropagation();
+        //Put ?edit=id in the url
+        window.history.pushState({}, '', `?edit=${id}`);
         
         // Oculta el contenido del menú desplegable
         const dropdown = document.querySelector(`.dropdown-content${id}`);
@@ -150,26 +163,14 @@ function addEventListenerToEditButton(editButton, id){
 
 // Añade un evento a la casilla de verificación para marcar una tarea como completada
 function addEventListenerToCheckBox(checkbox, id){
-    checkbox.addEventListener("change",async (event) => {
-            let taskId = getTaskId(id);
-            await updateTaskState(taskId);
-            location.reload(true);
-            const container = document.querySelector(".visualize-task-info-container");
-            container.style.display = "none";
-            const taskElement = document.querySelector(`.task-container${id}`);
-            const dropdown = document.querySelector(`.dropdown-content${id}`);
-            taskElement.classList.toggle("hide");
-            if (checkbox.checked) {
-                containerTasks.removeChild(taskElement);
-                containerTasksCompleted.appendChild(taskElement);
-            } else {
-                containerTasksCompleted.removeChild(taskElement);
-                containerTasks.appendChild(taskElement);
-            }
-            taskElement.classList.toggle("hide");
-            dropdown.classList.toggle("visible");
-        }
-    );
+    checkbox.addEventListener("change",async (event)=>{
+        event.stopPropagation();
+        const container = document.querySelector(".visualize-task-info-container");
+        container.style.display = "none";
+        let taskId = getTaskById(id).id;
+        await updateTaskState(taskId);
+        location.reload(true);
+    });
 }
 
 
@@ -210,7 +211,7 @@ function createEditFormHTML(editInfoContainer) {
 
 // Función que obtiene el id de una tarea
 function getTaskById(id){
-    return tasks[id];
+    return id >= 0 ? tasks[id] : tasksCompleted[-1-1*id];
 }
 
 // Función que crea el HTML de una tarea específica
@@ -219,6 +220,7 @@ function createTaskHTML(taskContainer, task, id){
     <button class="menu-btn menu-btn${id}">⋮</button>
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
+        <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-priority${id}">${task.priority}</p>
     <div/>
@@ -240,7 +242,7 @@ function editTaskInfo(id){
     const taskDate = document.querySelector(`.task-date${id}`);
     const taskPriority = document.querySelector(`.task-priority${id}`);
     taskName.textContent = task.name;
-    taskDate.textContent = task.date;
+    taskDate.textContent = dateFormat(task.deadline);
     taskPriority.textContent = task.priority;
 }
 
@@ -257,7 +259,7 @@ function addEventListenerToTaskInfo(taskInfo, id) {
                 <button class="close-visualize">x</button>
                 <p>Nombre: ${task.name}</p>
                 <p>Descripción: ${task.description}</p>
-                <p>Fecha límite: ${task.date}</p>
+                <p>Fecha límite: ${dateFormat(task.deadline)}</p>
                 <p>Prioridad: ${task.priority}</p>
             </div>
         `;
@@ -345,6 +347,7 @@ async function addNewTask(){
             priority: priority.toUpperCase()
         };
         await addTask(newTask);
+        tasks.push(newTask);
         const taskId = tasks.length - 1;
 
         createTaskContainer(containerTasks, newTask, taskId);
@@ -429,14 +432,4 @@ function changePriorityButtonColor(priority) {
         orderByPriorityButton.classList.add('normal');
         showAllTasks();
     }
-}
-
-// Muestra todas las tareas sin aplicar filtros
-function showAllTasks() {
-    // Mostrar todas las tareas sin filtro
-    containerTasks.innerHTML = ''; // Limpiar las tareas actuales
-
-    tasks.forEach((task, index) => {
-        createTaskContainer(containerTasks, task, index);
-    });
 }
