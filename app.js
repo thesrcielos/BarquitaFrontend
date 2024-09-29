@@ -24,9 +24,6 @@ tasks.forEach((task,index)=>{
 tasksCompleted.forEach((task,index)=>{
     createTaskContainer(containerTasksCompleted,task,-1-1*index);
 });
-taskCompleted.forEach((task, index)=>{
-    createTaskContainer(containerTasksCompleted, task, -1*index-1);
-})
 
 
 addTaskButton.addEventListener("click", ()=>{
@@ -152,12 +149,6 @@ function addEventListenerToCheckBox(checkbox, id){
     });
 }
 
-function getTaskId(id){
-    if (id < 0) {
-       return taskCompleted[-1 - 1 * id].id;
-    }
-    return tasks[id].id;
-}
 function createEditFormHTML(editInfoContainer) {
     let id = getIdFromURL();
     let task = getTaskById(id);
@@ -193,7 +184,6 @@ function createTaskHTML(taskContainer, task, id){
     <button class="menu-btn menu-btn${id}">⋮</button>
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
-        <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-priority${id}">${task.priority}</p>
     <div/>
