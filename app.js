@@ -24,6 +24,10 @@ tasks.forEach((task,index)=>{
 tasksCompleted.forEach((task,index)=>{
     createTaskContainer(containerTasksCompleted,task,-1-1*index);
 });
+taskCompleted.forEach((task, index)=>{
+    createTaskContainer(containerTasksCompleted, task, -1*index-1);
+})
+
 
 addTaskButton.addEventListener("click", ()=>{
     showAddTaskForm();
@@ -98,7 +102,7 @@ async function handleEventSubmitEditInfo(event){
     editInfoContainer.style.display = "none";
 
     //Delete ?edit=id of the url
-    deleteEditFromUrl();
+
     editTaskInfo(id);
 }
 
@@ -147,6 +151,13 @@ function addEventListenerToCheckBox(checkbox, id){
         location.reload(true);
     });
 }
+
+function getTaskId(id){
+    if (id < 0) {
+       return taskCompleted[-1 - 1 * id].id;
+    }
+    return tasks[id].id;
+}
 function createEditFormHTML(editInfoContainer) {
     let id = getIdFromURL();
     let task = getTaskById(id);
@@ -182,6 +193,7 @@ function createTaskHTML(taskContainer, task, id){
     <button class="menu-btn menu-btn${id}">⋮</button>
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
+        <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-priority${id}">${task.priority}</p>
     <div/>
@@ -283,16 +295,22 @@ function showAddTaskForm() {
 }
 
 async function addNewTask(){
+async function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
     const priority = document.getElementById("task-priority").value;
     const date = document.getElementById("task-deadline").value;
+    const date = document.getElementById("task-deadline").value;
     const addTaskInformation = document.querySelector(".add-task-info-container");
     
     if (name && description && priority && date) {
+        console.log(date)
         const newTask = {
             name: name,
             description: description,
+            deadline: date,
+            state: false,
+            priority: priority.toUpperCase()
             deadline: date,
             state: false,
             priority: priority.toUpperCase()
@@ -300,6 +318,7 @@ async function addNewTask(){
         await addTask(newTask);
         tasks.push(newTask);
         const taskId = tasks.length - 1;
+
         createTaskContainer(containerTasks, newTask, taskId);
 
         // Limpiar el formulario
