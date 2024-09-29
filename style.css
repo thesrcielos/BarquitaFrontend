@@ -127,7 +127,8 @@ p {
 }
 
 .checkbox-button {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
     cursor: pointer;
     background-color: #fff;
     color: #2aa8de;
