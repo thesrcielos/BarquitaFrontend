@@ -13,6 +13,7 @@
         <div class="buttons">
             <button class="insights-button"><a href="insights.html">Análisis de tareas 📊</a></button>
             <button class="order-by-priority-button">Ordenar por prioridad 🔝</button>
+            <button class="order-by-difficulty-button">Ordenar por dificultad 👀</button>
             <button class="order-by-date-button">Filtrar por fecha 📆</button>
             <button class="add-task-button">Agregar tarea ➕</button>
         </div>    
@@ -26,7 +27,7 @@
         <div class="container-tasks"></div>
     </div>
 
-    <div class="tasks-completed"></div>
+    <div class="tasks-completed">
         <div class="header-completed">
             <button class="hide-button-complete">🔻</button>
             <h2 class="title-task">Completadas</h2>
@@ -44,17 +45,31 @@
         <input type="date" id="filter-date">
         <button id="filter-by-date-button">Filtrar</button>
     </div>
-    <div class="dificulty-filter-container">
-        <button class="close-dificulty-filter">✖️</button>
-        <h2>Seleccionar Prioridad</h2>
-        <select id="filter-dificulty">
-            <option value="" disabled selected>Seleccionar prioridad</option>
+    <div class="difficulty-filter-container">
+        <button class="close-difficulty-filter">✖️</button>
+        <h2>Seleccionar Dificultad</h2>
+        <select id="filter-difficulty">
+            <option value="" disabled selected>Seleccionar dificultad</option>
             <option value="Alta">Alta</option>
             <option value="Media">Media</option>
             <option value="Baja">Baja</option>
-            <option value="Ninguna">Ninguna</option>
+            <option value="Todas">Todas</option>
         </select>
-        <button id="apply-dificulty-filter">Aplicar filtro</button>
+        <button id="apply-difficulty-filter">Aplicar filtro</button>
+    </div>
+    <div class="priority-filter-container">
+        <button class="close-priority-filter">✖️</button>
+        <h2>Seleccionar Prioridad</h2>
+        <select id="filter-priority">
+            <option value="" disabled selected>Seleccionar prioridad</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="Todas">Todas</option>
+        </select>
+        <button id="apply-priority-filter">Aplicar filtro</button>
     </div>
     <script type="module" src="app.js"></script>
     <script type="module" src="connectionBackend.js"></script>
