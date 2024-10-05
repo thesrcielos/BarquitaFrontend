@@ -1,3 +1,5 @@
+const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
+
 /**
  * Fetches all tasks by their state from the server.
  * 
@@ -6,7 +8,7 @@
  * @throws {Error} - Throws an error if the network response is not ok.
  */
 export async function getAllTasksByState(state) {
-    const response = await fetch(`http://localhost:8080/getTasksByState?state=${state}`, {
+    const response = await fetch(`${API_URL}/getTasksByState?state=${state}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -28,7 +30,7 @@ export async function getAllTasksByState(state) {
  * @throws {Error} - Throws an error if the network response is not ok.
  */
 export async function addTask(task){
-    const response = await fetch(`http://localhost:8080/addTask`, {
+    const response = await fetch(`${API_URL}/addTask`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -48,7 +50,7 @@ export async function addTask(task){
  * @throws {Error} - Throws an error if the network response is not ok.
  */
 export async function deleteTask(id){
-    const response = await fetch(`http://localhost:8080/deleteTask?id=${id}`, {
+    const response = await fetch(`${API_URL}/deleteTask?id=${id}`, {
         method: 'DELETE',
         headers: {
                 'Content-Type': 'application/json',
@@ -67,7 +69,7 @@ export async function deleteTask(id){
  * @throws {Error} - Logs and throws any encountered errors.
  */
 export async function updateTask(task){
-    const response = await fetch(`http://localhost:8080/updateTask`, {
+    const response = await fetch(`${API_URL}/updateTask`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -87,7 +89,7 @@ export async function updateTask(task){
  * @throws {Error} - Logs any encountered errors.
  */
 export async function updateTaskState(id){
-    const response = await fetch(`http://localhost:8080/changeStateTask?id=${id}`, {
+    const response = await fetch(`${API_URL}/changeStateTask?id=${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -97,3 +99,60 @@ export async function updateTaskState(id){
         throw new Error('Network response was not ok: ' + response.statusText);
     }
 }
+
+export async function getHistogram(){
+    const response = await fetch(`${API_URL}/Analytics/getHistogram`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+
+    return await response.json();
+}
+
+export async function getFinishedTasksByTime(){
+    const response = await fetch(`${API_URL}/Analytics/getFinishedTasks`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function getAverageByPriority(){
+    const response = await fetch(`${API_URL}/Analytics/getAverageByPriority`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function getTotalTimeSpentByDifficulty(){
+    const response = await fetch(`${API_URL}/Analytics/getTotalTimeSpentByDifficulty`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+
+
+

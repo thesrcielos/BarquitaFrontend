@@ -127,7 +127,8 @@ p {
 }
 
 .checkbox-button {
-    display: inline-block;
+    display: flex;
+    flex-direction: row;
     cursor: pointer;
     background-color: #fff;
     color: #2aa8de;
@@ -461,4 +462,20 @@ textarea {
 .order-by-dificulty-button.baja:hover {
     background-color: rgb(0, 100, 0);
     color: white;
+}
+
+.insights-button{
+    background-color: #3498db;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.insights-button a{
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
 }
