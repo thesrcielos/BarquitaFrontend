@@ -397,7 +397,8 @@ textarea {
     display: block; /* Mostrar cuando tenga la clase 'show' */
 }
 
-.dificulty-filter-container {
+.difficulty-filter-container,  .priority-filter-container {
+
     display: none; /* Oculto inicialmente */
     position: fixed;
     top: 50%;
@@ -409,56 +410,64 @@ textarea {
     z-index: 100;
 }
 
-.dificulty-filter-container.show {
+.difficulty-filter-container.show ,  .priority-filter-container.show {
     display: block; /* Mostrar cuando tenga la clase 'show' */
 }
 
-.order-by-dificulty-button {
+.order-by-difficulty-button {
     background-color: #7734ff;
 }
 
-.order-by-dificulty-button:hover {
+.order-by-difficulty-button:hover {
     background-color: #602acc;
 }
 
 /* Estado normal del botón */
-.order-by-dificulty-button.normal {
+.order-by-difficulty-button.normal {
     background-color: #7734ff; /* Color de fondo inicial */
     color: white; /* Color de texto inicial */
 }
 
 /* Estilo del hover para el botón en estado normal */
-.order-by-dificulty-button.normal:hover {
+.order-by-difficulty-button.normal:hover {
     background-color: #602acc;
     color: white; /* Color de texto al hacer hover */
 }
 
-.order-by-dificulty-button.alta {
+.order-by-difficulty-button.alta {
     background-color: red;
     color: white;
 }
 
-.order-by-dificulty-button.alta:hover {
+.order-by-difficulty-button.alta:hover {
     background-color: rgb(163, 0, 0);
     color: white;
 }
 
-.order-by-dificulty-button.media {
+.order-by-difficulty-button.media {
     background-color: yellow;
     color: black;
 }
 
-.order-by-dificulty-button.media:hover {
+.order-by-difficulty-button.media:hover {
     background-color: rgb(193, 193, 0);
     color: black;
 }
 
-.order-by-dificulty-button.baja {
+.order-by-difficulty-button.baja {
     background-color: green;
     color: white;
 }
 
-.order-by-dificulty-button.baja:hover {
+.order-by-difficulty-button.baja:hover {
     background-color: rgb(0, 100, 0);
     color: white;
+}
+
+.order-by-priority-button {
+    background-color: #ff9d34;
+}
+
+.order-by-priority-button:hover {
+    background-color: #da872f;
 }

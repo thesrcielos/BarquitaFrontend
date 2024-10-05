@@ -4,6 +4,9 @@ import {getAllTasksByState, addTask, deleteTask, updateTask, updateTaskState} fr
 let tasks = await getAllTasksByState(false);
 let tasksCompleted = await getAllTasksByState(true);
 
+// Valores validos
+const difficultyLevels = ["alta", "media", "baja"];
+const priorityLevels = ["1", "2", "3",  "4", "5"];
 
 // Referencias a elementos del DOM
 const containerTasks = document.querySelector(".container-tasks");
@@ -11,8 +14,9 @@ const containerTasksCompleted = document.querySelector(".container-tasks-complet
 const hideButtonNotCompletedTasks = document.querySelector(".hide-button-not-complete");
 const hideButtonCompletedTasks = document.querySelector(".hide-button-complete");
 const addTaskButton = document.querySelector(".add-task-button");
-const orderByDificultyButton = document.querySelector(".order-by-dificulty-button");
+const orderByDifficultyButton = document.querySelector(".order-by-difficulty-button");
 const orderByDateButton = document.querySelector(".order-by-date-button");
+const orderByPriorityButton = document.querySelector(".order-by-priority-button");
 
 // Oculta o muestra las tareas no completadas al hacer clic en el botón correspondiente
 hideButtonNotCompletedTasks.addEventListener("click", ()=>{
@@ -45,8 +49,13 @@ orderByDateButton.addEventListener("click",  ()=>{
 });
 
 // Muestra el filtro por dificultad al hacer clic en el botón de ordenar por dificultad
-orderByDificultyButton.addEventListener("click", () => {
-    showDificultyFilter();
+orderByDifficultyButton.addEventListener("click", () => {
+    showDifficultyFilter();
+});
+
+// Muestra el filtro por prioridad al hacer clic en el botón de ordenar por prioridad
+orderByPriorityButton.addEventListener("click", () => {
+    showPriorityFilter();
 });
 
 // Función que crea el contenedor para cada tarea
@@ -107,7 +116,8 @@ async function handleEventSubmitEditInfo(event){
     task.name = formData.get('name');
     task.description = document.querySelector("#description").value;
     task.deadline = formData.get('deadline');
-    task.dificulty = formData.get('dificulty').toUpperCase();
+    task.difficulty = formData.get('difficulty').toUpperCase();
+    task.priority = formData.get('priority').toUpperCase();
 
     await updateTask(task);
 
@@ -115,7 +125,6 @@ async function handleEventSubmitEditInfo(event){
     editInfoContainer.style.display = "none";
 
     //Delete ?edit=id of the url
-
     editTaskInfo(id);
 }
 
@@ -197,11 +206,20 @@ function createEditFormHTML(editInfoContainer) {
                 <label for="deadline">Fecha y hora</label>
                 <input type="datetime-local" id="deadline" name="deadline" required>
                 <label for="dificultad">Dificultad</label>
-                <select id="options" name="dificulty" required>
+                <select id="options" name="difficulty" required>
                     <option value="" disabled selected>Seleccionar</option>
                     <option value="Baja">Baja</option>
                     <option value="Media">Media</option>
                     <option value="Alta">Alta</option>
+                </select>
+                <label for="prioridad">Prioridad</label>
+                <select id="options" name="priority" required>
+                    <option value="" disabled selected>Seleccionar</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
                 </select>
                 <button type="submit">Guardar Cambios</button>
             </form>
@@ -222,7 +240,8 @@ function createTaskHTML(taskContainer, task, id){
         <p class="task-name${id}">${task.name}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
-        <p class="task-dificulty${id}">${task.dificulty}</p>
+        <p class="task-difficulty${id}">${task.difficulty}</p>
+        <p class="task-priority${id}">${task.priority}</p>
     <div/>
     <div class="dropdown-content dropdown-content${id}">
         <button class="edit-btn edit-btn${id}">✏️ Editar</button>
@@ -240,10 +259,12 @@ function editTaskInfo(id){
     let task = getTaskById(id);
     const taskName = document.querySelector(`.task-name${id}`);
     const taskDate = document.querySelector(`.task-date${id}`);
-    const taskDificulty = document.querySelector(`.task-dificulty${id}`);
+    const taskDifficulty = document.querySelector(`.task-difficulty${id}`);
+    const taskPriority = document.querySelector(`.task-priority${id}`);
     taskName.textContent = task.name;
     taskDate.textContent = dateFormat(task.deadline);
-    taskDificulty.textContent = task.dificulty;
+    taskDifficulty.textContent = task.difficulty;
+    taskPriority.textContent = task.priority;
 }
 
 // Función para agregar un evento de clic en el contenedor de la tarea
@@ -260,7 +281,8 @@ function addEventListenerToTaskInfo(taskInfo, id) {
                 <p>Nombre: ${task.name}</p>
                 <p>Descripción: ${task.description}</p>
                 <p>Fecha límite: ${dateFormat(task.deadline)}</p>
-                <p>Dificultad: ${task.dificulty}</p>
+                <p>Dificultad: ${task.difficulty}</p>
+                <p>Prioridad: ${task.priority}</p>
             </div>
         `;
         
@@ -306,11 +328,20 @@ function showAddTaskForm() {
             <label for="deadline">Fecha y hora</label>
             <input type="datetime-local" id="task-deadline" name="deadline" required>
 
-            <label for="task-dificulty">Dificultad:</label>
-            <select id="task-dificulty" required>
+            <label for="task-difficulty">Dificultad:</label>
+            <select id="task-difficulty" required>
                 <option value="Baja">Baja</option>
                 <option value="Media">Media</option>
                 <option value="Alta">Alta</option>
+            </select>
+
+            <label for="task-priority">Prioridad:</label>
+            <select id="task-priority" required>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
             <button id="create-task-button">Crear</button>
         </div>
@@ -333,18 +364,21 @@ function showAddTaskForm() {
 async function addNewTask(){
     const name = document.getElementById("task-name").value;
     const description = document.getElementById("task-description").value;
-    const dificulty = document.getElementById("task-dificulty").value;
+    const difficulty = document.getElementById("task-difficulty").value;
+    const priority = document.getElementById("task-priority").value;
     const date = document.getElementById("task-deadline").value;
     const addTaskInformation = document.querySelector(".add-task-info-container");
     
-    if (name && description && dificulty && date) {
+    if (name && description && difficulty && date &&  priority) {
+
         console.log(date)
         const newTask = {
             name: name,
             description: description,
             deadline: date,
             state: false,
-            dificulty: dificulty.toUpperCase()
+            difficulty: difficulty.toUpperCase(),
+            priority: priority.toUpperCase()
         };
         await addTask(newTask);
         tasks.push(newTask);
@@ -389,47 +423,85 @@ function filterTasksByDate(selectedDate) {
 }
 
 // Muestra el cuadro de selección de filtro por dificultad
-function showDificultyFilter() {
-    const dificultyFilterContainer = document.querySelector(".dificulty-filter-container");
-    dificultyFilterContainer.classList.add("show");
+function showDifficultyFilter() {
+    const difficultyFilterContainer = document.querySelector(".difficulty-filter-container");
+    difficultyFilterContainer.classList.add("show");
 
     // Cerrar el cuadro de selección de dificultad
-    const closeButton = document.querySelector(".close-dificulty-filter");
+    const closeButton = document.querySelector(".close-difficulty-filter");
     closeButton.addEventListener("click", () => {
-        dificultyFilterContainer.classList.remove("show");
+        difficultyFilterContainer.classList.remove("show");
     });
 
     // Aplicar el filtro de dificultad
-    const applyDificultyFilterButton = document.getElementById("apply-dificulty-filter");
-    applyDificultyFilterButton.addEventListener("click", () => {
-        const selectedDificulty = document.getElementById("filter-dificulty").value;
-        if (selectedDificulty) {    
-            filterTasksByDificulty(selectedDificulty);
-            changeDificultyButtonColor(selectedDificulty);
+    const applyDifficultyFilterButton = document.getElementById("apply-difficulty-filter");
+    applyDifficultyFilterButton.addEventListener("click", () => {
+        const selectedDifficulty = document.getElementById("filter-difficulty").value;
+        if (selectedDifficulty) {    
+            filterTasksByDifficulty(selectedDifficulty);
+            changeDifficultyButtonColor(selectedDifficulty);
         }
-        dificultyFilterContainer.classList.remove("show"); // Cerrar el cuadro después de aplicar el filtro
+        difficultyFilterContainer.classList.remove("show"); // Cerrar el cuadro después de aplicar el filtro
     });
 }
 
 
 // Filtra las tareas según la dificultad seleccionada
-function filterTasksByDificulty(selectedDificulty) {
-    const filteredTasks = tasks.filter(task => task.dificulty === selectedDificulty);
+function filterTasksByDifficulty(selectedDifficulty) {
+    const filteredTasks = tasks.filter(task => task.difficulty === selectedDifficulty);
 }
 
 // Cambia el color del botón de filtro de dificultad según la dificultad seleccionada
-function changeDificultyButtonColor(dificulty) {
+function changeDifficultyButtonColor(difficulty) {
     // Remover las clases de color actuales
-    orderByDificultyButton.classList.remove('alta', 'media', 'baja');
+    orderByDifficultyButton.classList.remove('Alta', 'Media', 'Baja');
     // Agregar la clase correcta según la dificultad
-    if (dificulty === "Alta") {
-        orderByDificultyButton.classList.add('alta');
-    } else if (dificulty === "Media") {
-        orderByDificultyButton.classList.add('media');
-    } else if (dificulty === "Baja") {
-        orderByDificultyButton.classList.add('baja');
+    if (difficultyLevels.includes(difficulty)) {
+        orderByDifficultyButton.classList.add(difficulty);
     } else {
-        orderByDificultyButton.classList.add('normal');
+        orderByDifficultyButton.classList.add('normal');
+        showAllTasks();
+    }
+}
+
+// Muestra el cuadro de selección de filtro por prioridad
+function showPriorityFilter() {
+    const priorityFilterContainer = document.querySelector(".priority-filter-container");
+    priorityFilterContainer.classList.add("show");
+
+    // Cerrar el cuadro de selección de prioridad
+    const closeButton = document.querySelector(".close-priority-filter");
+    closeButton.addEventListener("click", () => {
+        priorityFilterContainer.classList.remove("show");
+    });
+
+    // Aplicar el filtro de prioridad
+    const applyPriorityFilterButton = document.getElementById("apply-priority-filter");
+    applyPriorityFilterButton.addEventListener("click", () => {
+        const selectedPriority = document.getElementById("filter-priority").value;
+        if (selectedPriority) {    
+            filterTasksByPriority(selectedPriority);
+            changePriorityButtonColor(selectedPriority);
+        }
+        priorityFilterContainer.classList.remove("show"); // Cerrar el cuadro después de aplicar el filtro
+    });
+}
+
+// Filtra las tareas según la prioridad seleccionada
+function filterTasksByPriority(selectedPriority) {
+    const filteredTasks = tasks.filter(task => task.priority === selectedPriority);
+}
+
+// Cambia el color del botón de filtro de dificultad según la dificultad seleccionada
+function changePriorityButtonColor(priority) {
+    // Remover las clases de color actuales
+    orderByPriorityButton.classList.remove('1', '2', '3',  '4', '5');
+
+    // Agregar la clase correcta según la dificultad
+    if (priorityLevels.includes(priority)) {
+        orderByPriorityButton.classList.add(priority);
+    } else {
+        orderByPriorityButton.classList.add('ninguna');
         showAllTasks();
     }
 }
