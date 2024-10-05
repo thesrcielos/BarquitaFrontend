@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="insights.css">
+</head>
+<body>
+  <button class="back-button">
+    <a href="index.html">Regresar</a>
+  </button>
+
+  <div class="container-chart-choose">
+    <form action="" id="form-chart">
+      <select name="selected-chart" id="select-chart" required>
+        <option value="" disabled selected>Seleccionar</option>
+        <option value="Tareas por dificultad">Tareas por dificultad</option>
+        <option value="Tareas finalizadas por tiempo">Tareas finalizadas por tiempo</option>
+        <option value="Tiempo total tareas">Tiempo total por tareas realizadas.</option>
+        <option value="Tareas por prioridad">Promedio tareas por prioridad</option>
+      </select>
+      <input type="submit" class="generate-button" value="Generar">
+    </form>
+  </div>
+
+  <div>
+    <canvas id="myChart"></canvas>
+  </div>
+      
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="insights.js"></script>
+    <script type="module" src="connectionBackend.js"></script>
+      
+</body>
+</html>
+

@@ -34,9 +34,9 @@ tasks.forEach((task,index)=>{
 });
 
 // Crea los contenedores de tareas completadas
-tasksCompleted.forEach((task, index)=>{
-    createTaskContainer(containerTasksCompleted, task, -1*index-1);
-})
+tasksCompleted.forEach((task,index)=>{
+    createTaskContainer(containerTasksCompleted,task,-1-1*index);
+});
 
 // Muestra el formulario para agregar una nueva tarea al hacer clic en el botón correspondiente
 addTaskButton.addEventListener("click", ()=>{
@@ -182,7 +182,6 @@ function addEventListenerToCheckBox(checkbox, id){
     });
 }
 
-
 // Obtiene una tarea por su ID
 function getTaskId(id){
     if (id < 0) {
@@ -239,6 +238,7 @@ function createTaskHTML(taskContainer, task, id){
     <div class="task-info task-info${id}">
         <p class="task-name${id}">${task.name}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
+        <p class="task-priority${id}">${task.priority}</p>
         <p class="task-date${id}">${dateFormat(task.deadline)}</p>
         <p class="task-difficulty${id}">${task.difficulty}</p>
         <p class="task-priority${id}">${task.priority}</p>
