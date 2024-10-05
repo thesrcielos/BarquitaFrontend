@@ -398,7 +398,7 @@ textarea {
     display: block; /* Mostrar cuando tenga la clase 'show' */
 }
 
-.priority-filter-container {
+.dificulty-filter-container {
     display: none; /* Oculto inicialmente */
     position: fixed;
     top: 50%;
@@ -410,56 +410,56 @@ textarea {
     z-index: 100;
 }
 
-.priority-filter-container.show {
+.dificulty-filter-container.show {
     display: block; /* Mostrar cuando tenga la clase 'show' */
 }
 
-.order-by-priority-button {
+.order-by-dificulty-button {
     background-color: #7734ff;
 }
 
-.order-by-priority-button:hover {
+.order-by-dificulty-button:hover {
     background-color: #602acc;
 }
 
 /* Estado normal del botón */
-.order-by-priority-button.normal {
+.order-by-dificulty-button.normal {
     background-color: #7734ff; /* Color de fondo inicial */
     color: white; /* Color de texto inicial */
 }
 
 /* Estilo del hover para el botón en estado normal */
-.order-by-priority-button.normal:hover {
+.order-by-dificulty-button.normal:hover {
     background-color: #602acc;
     color: white; /* Color de texto al hacer hover */
 }
 
-.order-by-priority-button.alta {
+.order-by-dificulty-button.alta {
     background-color: red;
     color: white;
 }
 
-.order-by-priority-button.alta:hover {
+.order-by-dificulty-button.alta:hover {
     background-color: rgb(163, 0, 0);
     color: white;
 }
 
-.order-by-priority-button.media {
+.order-by-dificulty-button.media {
     background-color: yellow;
     color: black;
 }
 
-.order-by-priority-button.media:hover {
+.order-by-dificulty-button.media:hover {
     background-color: rgb(193, 193, 0);
     color: black;
 }
 
-.order-by-priority-button.baja {
+.order-by-dificulty-button.baja {
     background-color: green;
     color: white;
 }
 
-.order-by-priority-button.baja:hover {
+.order-by-dificulty-button.baja:hover {
     background-color: rgb(0, 100, 0);
     color: white;
 }
