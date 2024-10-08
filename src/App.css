@@ -486,3 +486,38 @@ textarea {
   color: white;
   font-size: 16px;
 }
+
+nav {
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* Estilos para la lista de navegación */
+.nav-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nav-list li {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+/* Estilos para los enlaces, que se verán como botones */
+.nav-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007BFF; /* Color azul */
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Efecto hover para los botones */
+.nav-button:hover {
+  background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+}
