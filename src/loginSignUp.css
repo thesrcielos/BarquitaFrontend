@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     margin: auto;
-    margin-top: 200px;
+    margin-top: 125;
     width: 600px;
     background: #fff;
     padding-bottom: 30px;
@@ -14,7 +14,7 @@
     align-items: center;
     gap: 9px;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 10;
 }
 
 .text{
@@ -76,7 +76,7 @@
 .buttons-container{
     display: flex;
     gap: 30px;
-    margin: 60px auto;
+    margin: 30px auto;
 }
 
 .button{
@@ -91,6 +91,21 @@
     font-size: 19px;
     font-weight: 700;
     cursor: pointer;
+}
+
+.submit-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 59px;
+    color: #fff;
+    background: rgb(51, 121, 187);
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 30px auto;
 }
 
 .gray{
