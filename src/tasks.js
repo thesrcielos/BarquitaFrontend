@@ -1,5 +1,5 @@
 import React, { useEffect, useState} from 'react';
-import "./App.css";
+import "./tasks.css";
 import {
   getAllTasksByState,
   addTask,
