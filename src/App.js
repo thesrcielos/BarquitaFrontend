@@ -1,27 +1,20 @@
-import React, { useEffect, useState} from 'react';
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Tasks from './tasks';
-import Insights from './insights';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
+import AppRoutes from './appRoutes'; // Importa las rutas que tienes definidas
+import LoginSignUp from './loginSignUp'; // Componente LoginSignUp
+
 const App = () => {
   return (
-    <Router>
-      <nav>
-        <ul className="nav-list">
-          <li>
-            <Link to="/" className="nav-button">Home</Link>
-          </li>
-          <li>
-            <Link to="/insights" className="nav-button">Insights</Link>
-          </li>
-        </ul>
-      </nav>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginSignUp />} />
 
-      <Routes>
-        <Route path="/" element={<Tasks/>} />
-        <Route path="/insights" element={<Insights />} />
-      </Routes>
-    </Router>
+          <Route path="/*" element={
+              <AppRoutes />
+            } 
+            />
+        </Routes>
+      </Router>
   );
 }
 

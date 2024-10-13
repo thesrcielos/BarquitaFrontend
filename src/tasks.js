@@ -1,13 +1,16 @@
 import React, { useEffect, useState} from 'react';
-import "./App.css";
+import "./tasks.css";
 import {
   getAllTasksByState,
   addTask,
   deleteTask,
   updateTask,
   updateTaskState,
+  getUserIdFromEmail
 } from './connectionBackend.js';
 
+import Home from './home.js';
+import {jwtDecode} from 'jwt-decode';
 
 const difficultyLevels = ['alta', 'media', 'baja'];
 const priorityLevels = ['1', '2', '3', '4', '5'];
@@ -21,6 +24,30 @@ const Tasks = () => {
   const [menuVisible, setMenuVisible] = useState(null);
   const [isTasksNotCompletedVisible, setIsTasksNotCompletedVisible] = useState(true);
   const [isTasksCompletedVisible, setIsTasksCompletedVisible] = useState(true);
+  const [userId, setUserId] = useState(undefined);
+
+  
+  useEffect(() => {
+    const fetchUserIdAndTasks = async () => {
+      const token = localStorage.getItem('token'); // O donde tengas el token guardado.
+      const decoded = jwtDecode(token);
+      const email = decoded.sub;
+
+      // Obtén el userId desde el email
+      const userIdFromApi = (await getUserIdFromEmail(email)).userId;
+      setUserId(userIdFromApi);
+
+      // Asegúrate de que userId se haya establecido antes de hacer las solicitudes de tareas
+      if (userIdFromApi) {
+        const incompleteTasks = await getAllTasksByState(userIdFromApi, false);
+        const completedTasks = await getAllTasksByState(userIdFromApi, true);
+        setTasks(incompleteTasks);
+        setTasksCompleted(completedTasks);
+      }
+    };
+
+    fetchUserIdAndTasks();
+  }, []);
 
   const toggleMenu = (id) => {
     setMenuVisible(menuVisible === id ? null : id);
@@ -31,8 +58,9 @@ const Tasks = () => {
   }
 
   const handleChangeStateTask = async (changeTask) => {
+    toggleMenu(null);
     let taskId = changeTask.id;
-    await updateTaskState(taskId);
+    await updateTaskState(userId, taskId);
 
     let initialState= changeTask.state;
     changeTask.state = !initialState;
@@ -52,16 +80,6 @@ const Tasks = () => {
     setIsTasksCompletedVisible(!isTasksCompletedVisible);
   }
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const incompleteTasks = await getAllTasksByState(false);
-      const completedTasks = await getAllTasksByState(true);
-      setTasks(incompleteTasks);
-      setTasksCompleted(completedTasks);
-    };
-
-    fetchTasks();
-  }, []);
 
   const closeEditForm = () => {
     setInfoTaskId(null);
@@ -75,12 +93,12 @@ const Tasks = () => {
   }
   
   const handleAddTask = async (newTask) => {
-    await addTask(newTask);
+    await addTask(userId, newTask);
     setTasks([...tasks, newTask]);
   };
 
   const handleDeleteTask = async (taskId, isCompleted) => {
-    await deleteTask(taskId);
+    await deleteTask(userId, taskId);
     if (isCompleted) {
       setTasksCompleted(tasksCompleted.filter(task => task.id !== taskId));
     } else {
@@ -90,7 +108,7 @@ const Tasks = () => {
   };
 
   const handleUpdateTask = async (updatedTask) => {
-    await updateTask(updatedTask);
+    await updateTask(userId, updatedTask);
     if (updatedTask.state) {
       setTasksCompleted(prevTasks => prevTasks.map(task => 
         task.id === updatedTask.id ? updatedTask : task
@@ -127,6 +145,7 @@ const Tasks = () => {
   const Task = ({ task, onDelete}) => {
     const handleEdit = () => {
       setInfoTaskId(task.id);
+      toggleMenu(null);
     };
 
     return (
@@ -171,6 +190,7 @@ const Tasks = () => {
   
   return (
     <div className="app-container">
+      <Home/>
       <div className="header">
         <h1>Mis tareas</h1>
         <div className="buttons">
