@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
 
 /**
  * Fetches all tasks by their state from the server.
@@ -176,7 +176,7 @@ export async function getTotalTimeSpentByDifficulty(userId){
 }
 
 export async function loginUser(userCredentials) {
-    const response = await fetch(`http://localhost:8080/login`, {
+    const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ export async function loginUser(userCredentials) {
 }
 
 export async function registerUser(user) {
-    const response = await fetch(`http://localhost:8080/createUser`, {
+    const response = await fetch(`${API_URL}/createUser`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ export async function registerUser(user) {
 
 export async function getUserIdFromEmail(email) {
     const token = localStorage.getItem('token');
-    const response = await fetch(`http://localhost:8080/getUserId?email=${email}`, {
+    const response = await fetch(`${API_URL}/getUserId?email=${email}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
