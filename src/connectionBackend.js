@@ -7,11 +7,13 @@ const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azureweb
  * @returns {Promise<Object[]>} - A promise that resolves to an array of task objects.
  * @throws {Error} - Throws an error if the network response is not ok.
  */
-export async function getAllTasksByState(state) {
-    const response = await fetch(`${API_URL}/getTasksByState?state=${state}`, {
+export async function getAllTasksByState(userId, state) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/${userId}/getTasksByState?state=${state}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
     });
     
@@ -29,15 +31,18 @@ export async function getAllTasksByState(state) {
  * @returns {Promise<Object>} - A promise that resolves to the added task object.
  * @throws {Error} - Throws an error if the network response is not ok.
  */
-export async function addTask(task){
-    console.log(task);
-    const response = await fetch(`${API_URL}/addTask`, {
+export async function addTask(userId, task){
+    const token = localStorage.getItem('token');
+    console.log(token);
+    const response = await fetch(`${API_URL}/${userId}/addTask`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(task)
     });
+    console.log(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -50,11 +55,13 @@ export async function addTask(task){
  * @returns {Promise<Object>} - A promise that resolves to the response object.
  * @throws {Error} - Throws an error if the network response is not ok.
  */
-export async function deleteTask(id){
-    const response = await fetch(`${API_URL}/deleteTask?id=${id}`, {
+export async function deleteTask(userId, id){
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/${userId}/deleteTask?id=${id}`, {
         method: 'DELETE',
         headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
     });
     if (!response.ok) {
@@ -69,12 +76,14 @@ export async function deleteTask(id){
  * @returns {Promise<void>} - A promise that resolves when the task is updated.
  * @throws {Error} - Logs and throws any encountered errors.
  */
-export async function updateTask(task){
+export async function updateTask(userId, task){
+    const token = localStorage.getItem('token');
     console.log(task);
-    const response = await fetch(`${API_URL}/updateTask`, {
+    const response = await fetch(`${API_URL}/${userId}/updateTask`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(task)
     });
@@ -90,11 +99,14 @@ export async function updateTask(task){
  * @returns {Promise<void>} - A promise that resolves when the task's state is updated.
  * @throws {Error} - Logs any encountered errors.
  */
-export async function updateTaskState(id){
-    const response = await fetch(`${API_URL}/changeStateTask?id=${id}`, {
+export async function updateTaskState(userId, id){
+    console.log(id);
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/${userId}/changeStateTask?id=${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     });
     if (!response.ok) {
@@ -102,11 +114,13 @@ export async function updateTaskState(id){
     }
 }
 
-export async function getHistogram(){
-    const response = await fetch(`${API_URL}/Analytics/getHistogram`, {
+export async function getHistogram(userId){
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/Analytics/getHistogram?userId=${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     });
     if (!response.ok) {
@@ -116,11 +130,13 @@ export async function getHistogram(){
     return await response.json();
 }
 
-export async function getFinishedTasksByTime(){
-    const response = await fetch(`${API_URL}/Analytics/getFinishedTasks`, {
+export async function getFinishedTasksByTime(userId){
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/Analytics/getFinishedTasks?userId=${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     });
     if (!response.ok) {
@@ -129,11 +145,13 @@ export async function getFinishedTasksByTime(){
     return await response.json();
 }
 
-export async function getAverageByPriority(){
-    const response = await fetch(`${API_URL}/Analytics/getAverageByPriority`, {
+export async function getAverageByPriority(userId){
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/Analytics/getAverageByPriority?userId=${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     });
     if (!response.ok) {
@@ -142,15 +160,52 @@ export async function getAverageByPriority(){
     return await response.json();
 }
 
-export async function getTotalTimeSpentByDifficulty(){
-    const response = await fetch(`${API_URL}/Analytics/getTotalTimeSpentByDifficulty`, {
+export async function getTotalTimeSpentByDifficulty(userId){
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/Analytics/getTotalTimeSpentByDifficulty?userId=${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         }
     });
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
+    return await response.json();
+}
+
+export async function loginUser(userCredentials) {
+    const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userCredentials)
+    });
+    return response;
+}
+
+export async function registerUser(user) {
+    const response = await fetch(`${API_URL}/createUser`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user)
+    });
+    return response;
+}
+
+export async function getUserIdFromEmail(email) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/getUserId?email=${email}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+        },
+    });
+
     return await response.json();
 }
