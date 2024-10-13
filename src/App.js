@@ -5,12 +5,16 @@ import LoginSignUp from './loginSignUp'; // Componente LoginSignUp
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginSignUp />} />
-        <Route path="/*" element={<AppRoutes />} />
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginSignUp />} />
+
+          <Route path="/*" element={
+              <AppRoutes />
+            } 
+            />
+        </Routes>
+      </Router>
   );
 }
 
