@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './App.css'; 
-
+import { useAuth } from './AuthenticationContext';
 const Home = () => {
+  const{logout} = useAuth();
   return (
     <nav>
       <ul className="nav-list">
@@ -11,6 +12,9 @@ const Home = () => {
         </li>
         <li>
           <Link to="/insights" className="nav-button">Insights</Link>
+        </li>
+        <li>
+          <Link to="/loginSignUp" className="nav-button" onClick={logout}>Logout</Link>
         </li>
       </ul>
     </nav>

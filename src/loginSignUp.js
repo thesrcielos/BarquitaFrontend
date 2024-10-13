@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './loginSignUp.css';
 import user_icon from './Assets/person.png'
 import email_icon from './Assets/email.png'
 import password_icon from './Assets/password.png'
-
+import { useAuth } from './AuthenticationContext';
 const LoginSignUp = ()  => {
 
+    const {login, isUserAuthenticated, register} = useAuth();
     const [action, setAction] = useState("Sign Up");
     const [submit, setSubmit] = useState("Crear Cuenta");
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(isUserAuthenticated()){
+            navigate('/tasks');
+        }
+    });
 
     const selectLoginAction = () => {
         setAction("Login");
@@ -27,14 +33,24 @@ const LoginSignUp = ()  => {
         setSubmit("Crear Cuenta");
     }
 
-    const submitLoginInfo = ()  => {
-        console.log("Login info:", { email, password });
-        navigate('/tasks');
+    const submitLoginInfo = async ()  => {
+        let res = await login({ email, password });
+
+        if(res.authenticated){
+            navigate('/tasks');
+        }else{
+            alert(res.error);
+        }
     }
 
-    const submitSignUpInfo = ()   => {
-        console.log("Sign Up info:", { name, email, password });
-        navigate('/tasks');
+    const submitSignUpInfo = async () => {
+        let res = await register({ name, email, password });
+
+        if(res.created){
+            navigate('/tasks');
+        }else{
+            alert(res.error);
+        }
     }
 
     return (
