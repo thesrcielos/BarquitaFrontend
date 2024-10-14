@@ -54,6 +54,7 @@ const LoginSignUp = ()  => {
     }
 
     return (
+        <div className='container-login-signup'>
         <div className="container">
             <div className='buttons-container'>
                 <div className={action === "Login" ? "button gray" : "button"} onClick={()=>{selectSignUpAction()}}>Sign  Up</div>
@@ -82,6 +83,7 @@ const LoginSignUp = ()  => {
             {action === "Sign Up" ? <div></div> : <div className='forgot-password'>Olvidó la Contraseña? <span>Clickee Aquí</span></div>}
             {submit === "Iniciar Sesión" && action === "Login" ? <div className='submit-button' onClick={()=>{submitLoginInfo()}}>{submit}</div> : 
             <div className='submit-button' onClick={()=>{submitSignUpInfo()}}>{submit}</div>}
+        </div>
         </div>
     )
 }
