@@ -1,3 +1,9 @@
+.container-login-signup{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .container{
     display: flex;
     flex-direction: column;
