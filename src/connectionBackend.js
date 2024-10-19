@@ -1,4 +1,5 @@
-const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
+const API_URL = 'http://localhost:8080';
+
 
 /**
  * Fetches all tasks by their state from the server.
@@ -8,6 +9,7 @@ const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azureweb
  * @throws {Error} - Throws an error if the network response is not ok.
  */
 export async function getAllTasksByState(userId, state) {
+    verifyTokenExists();
     const token = localStorage.getItem('token');
     const response = await fetch(`${API_URL}/${userId}/getTasksByState?state=${state}`, {
         method: 'GET',
@@ -16,7 +18,7 @@ export async function getAllTasksByState(userId, state) {
             'Authorization': `Bearer ${token}`
         },
     });
-    
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
     }
@@ -32,6 +34,7 @@ export async function getAllTasksByState(userId, state) {
  * @throws {Error} - Throws an error if the network response is not ok.
  */
 export async function addTask(userId, task){
+    verifyTokenExists();
     const token = localStorage.getItem('token');
     console.log(token);
     const response = await fetch(`${API_URL}/${userId}/addTask`, {
@@ -42,10 +45,11 @@ export async function addTask(userId, task){
         },
         body: JSON.stringify(task)
     });
-    console.log(response);
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
+    return await response.json();
 }
 
 /**
@@ -56,6 +60,7 @@ export async function addTask(userId, task){
  * @throws {Error} - Throws an error if the network response is not ok.
  */
 export async function deleteTask(userId, id){
+    verifyTokenExists();
     const token = localStorage.getItem('token');
     const response = await fetch(`${API_URL}/${userId}/deleteTask?id=${id}`, {
         method: 'DELETE',
@@ -64,6 +69,7 @@ export async function deleteTask(userId, id){
                 'Authorization': `Bearer ${token}`
             }
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -77,6 +83,7 @@ export async function deleteTask(userId, id){
  * @throws {Error} - Logs and throws any encountered errors.
  */
 export async function updateTask(userId, task){
+    verifyTokenExists();
     const token = localStorage.getItem('token');
     console.log(task);
     const response = await fetch(`${API_URL}/${userId}/updateTask`, {
@@ -87,6 +94,7 @@ export async function updateTask(userId, task){
         },
         body: JSON.stringify(task)
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -100,8 +108,8 @@ export async function updateTask(userId, task){
  * @throws {Error} - Logs any encountered errors.
  */
 export async function updateTaskState(userId, id){
-    console.log(id);
     const token = localStorage.getItem('token');
+    verifyTokenExists();
     const response = await fetch(`${API_URL}/${userId}/changeStateTask?id=${id}`, {
         method: 'PUT',
         headers: {
@@ -109,6 +117,7 @@ export async function updateTaskState(userId, id){
             'Authorization': `Bearer ${token}`
         }
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -116,6 +125,7 @@ export async function updateTaskState(userId, id){
 
 export async function getHistogram(userId){
     const token = localStorage.getItem('token');
+    verifyTokenExists();
     const response = await fetch(`${API_URL}/Analytics/getHistogram?userId=${userId}`, {
         method: 'GET',
         headers: {
@@ -123,6 +133,7 @@ export async function getHistogram(userId){
             'Authorization': `Bearer ${token}`
         }
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -132,6 +143,7 @@ export async function getHistogram(userId){
 
 export async function getFinishedTasksByTime(userId){
     const token = localStorage.getItem('token');
+    verifyTokenExists();
     const response = await fetch(`${API_URL}/Analytics/getFinishedTasks?userId=${userId}`, {
         method: 'GET',
         headers: {
@@ -139,6 +151,7 @@ export async function getFinishedTasksByTime(userId){
             'Authorization': `Bearer ${token}`
         }
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -147,6 +160,7 @@ export async function getFinishedTasksByTime(userId){
 
 export async function getAverageByPriority(userId){
     const token = localStorage.getItem('token');
+    verifyTokenExists();
     const response = await fetch(`${API_URL}/Analytics/getAverageByPriority?userId=${userId}`, {
         method: 'GET',
         headers: {
@@ -154,6 +168,7 @@ export async function getAverageByPriority(userId){
             'Authorization': `Bearer ${token}`
         }
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -162,6 +177,7 @@ export async function getAverageByPriority(userId){
 
 export async function getTotalTimeSpentByDifficulty(userId){
     const token = localStorage.getItem('token');
+    verifyTokenExists();
     const response = await fetch(`${API_URL}/Analytics/getTotalTimeSpentByDifficulty?userId=${userId}`, {
         method: 'GET',
         headers: {
@@ -169,6 +185,7 @@ export async function getTotalTimeSpentByDifficulty(userId){
             'Authorization': `Bearer ${token}`
         }
     });
+    verifyIfTokenHasExpired(response);
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
@@ -199,6 +216,7 @@ export async function registerUser(user) {
 
 export async function getUserIdFromEmail(email) {
     const token = localStorage.getItem('token');
+    verifyTokenExists();
     const response = await fetch(`${API_URL}/getUserId?email=${email}`, {
         method: 'GET',
         headers: {
@@ -206,6 +224,22 @@ export async function getUserIdFromEmail(email) {
             'Authorization': `Bearer ${token}` 
         },
     });
-
+    verifyIfTokenHasExpired(response);
     return await response.json();
+}
+
+const verifyIfTokenHasExpired = (response) => {
+    if(response.status === 403){
+        localStorage.removeItem('token');
+        alert("Sesión expirada, por favor inicia sesión nuevamente");
+        window.location.href = window.location.href;
+    }
+}
+
+const verifyTokenExists = () => {
+    let token = localStorage.getItem('token');
+    if(!token){
+        alert("Sesión expirada, por favor inicia sesión nuevamente");
+        window.location.href = window.location.href;
+    }
 }
