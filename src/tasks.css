@@ -146,15 +146,12 @@
     color: #f44336;
   }
   
-  .hidden{
-    display: none;
-  }
   
   .visible{
     display: block;
   }
   
-  .edit-info-container, .visualize-task-info-container{
+  .edit-info-container, .visualize-task-info-container, .filter-container{
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
@@ -232,11 +229,7 @@
     right: 0;
     background-color: #0056b3
   }
-  
-  .hide{
-    display: none;
-  }
-  
+
   textarea {
     width: 300px;
     height: 100px; 
@@ -381,7 +374,6 @@
   }
   
   .date-filter-container {
-    display: none; /* Oculto inicialmente */
     position: fixed;
     top: 50%;
     left: 50%;
@@ -397,8 +389,7 @@
   }
   
   .difficulty-filter-container,  .priority-filter-container {
-  
-    display: none; /* Oculto inicialmente */
+
     position: fixed;
     top: 50%;
     left: 50%;
@@ -520,9 +511,4 @@
   /* Efecto hover para los botones */
   .nav-button:hover {
     background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
-  }
-
-  /* Ocultar formularios de botones de filtros*/
-  .hidden {
-    display: none;
   }
