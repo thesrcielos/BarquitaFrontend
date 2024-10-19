@@ -25,6 +25,9 @@ const Tasks = () => {
   const [isTasksNotCompletedVisible, setIsTasksNotCompletedVisible] = useState(true);
   const [isTasksCompletedVisible, setIsTasksCompletedVisible] = useState(true);
   const [userId, setUserId] = useState(undefined);
+  const [selectedDifficulty, setSelectedDifficulty] = useState('');
+  const [selectedPriority, setSelectedPriority] = useState('');
+  const [visibleFilter, setVisibleFilter] = useState('none');
 
   
   useEffect(() => {
@@ -187,6 +190,46 @@ const Tasks = () => {
       </div>
     );
   };
+
+  // Función para filtrar las tareas por dificultad
+const filterTasksByDifficulty = () => {
+  if (selectedDifficulty) {
+    const newFilteredTasks = tasks.filter(task => task.difficulty === selectedDifficulty);
+    setTasks(newFilteredTasks);
+    const newFilteredTasksCompleted = tasksCompleted.filter(task => task.difficulty === selectedDifficulty);
+    setTasksCompleted(newFilteredTasksCompleted);
+    setSelectedDifficulty(selectedDifficulty);
+  }
+};
+
+// Función para filtrar las tareas por prioridad
+const filterTasksByPriority = () => {
+  if (selectedPriority) {
+    const newFilteredTasks = tasks.filter(task => task.priority === selectedPriority);
+    setTasks(newFilteredTasks);
+    const newFilteredTasksCompleted = tasksCompleted.filter(task => task.priority === selectedPriority);
+    setTasksCompleted(newFilteredTasksCompleted);
+    setSelectedPriority(selectedPriority);
+  }
+};
+
+// Funció para filtrar las tareas por fecha
+const filterTasksByDate = () => {
+  const selectedDate = document.getElementById('filter-date').value;
+  if (selectedDate) {
+    const newFilteredTasks = tasks.filter(task => task.date === selectedDate);  // Suponiendo que las tareas tengan una propiedad 'date'
+    setFilteredTasks(newFilteredTasks);
+  }
+};
+
+// Función para mostrar el formulario de los botones de filtrado
+const showFilter = (filterType) => {
+  if (visibleFilter === filterType) {
+    setVisibleFilter('none'); // Si ya está visible, lo ocultamos
+  } else {
+    setVisibleFilter(filterType); // De lo contrario, lo mostramos
+  }
+};
   
   return (
     <div className="app-container">
@@ -194,9 +237,9 @@ const Tasks = () => {
       <div className="header">
         <h1>Mis tareas</h1>
         <div className="buttons">
-          <button className="order-by-priority-button">Ordenar por prioridad 🔝</button>
-          <button className="order-by-difficulty-button">Ordenar por dificultad 👀</button>
-          <button className="order-by-date-button">Filtrar por fecha 📆</button>
+          <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝</button>
+          <button className="order-by-difficulty-button" onClick={() => showFilter('difficulty')}>Ordenar por dificultad 👀</button>
+          <button className="order-by-date-button" onClick={() => showFilter('date')}>Filtrar por fecha 📆</button>
           <button className="add-task-button" onClick={showAddTaskForm}>Agregar tarea ➕</button>
         </div>
       </div>
@@ -236,34 +279,35 @@ const Tasks = () => {
           onClose={closeTaskInfo}
         />
       )}
-      <div className="date-filter-container">
-        <button className="close-date-filter">✖️</button>
+      <div className={`date-filter-container ${visibleFilter === 'date' ? '' : 'hidden'}`}>
+        <button className="close-date-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
         <h2>Seleccionar Fecha</h2>
         <label htmlFor="filter-date">Fecha:</label>
         <input type="date" id="filter-date" />
-        <button id="filter-by-date-button">Filtrar</button>
+        <button id="filter-by-date-button" onClick={filterTasksByDate}>Filtrar</button>
       </div>
-      <div className="difficulty-filter-container">
-        <button className="close-difficulty-filter">✖️</button>
+      <div className={`difficulty-filter-container ${visibleFilter === 'difficulty' ? '' : 'hidden'}`}>
+        <button className="close-difficulty-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
         <h2>Seleccionar Dificultad</h2>
-        <select id="filter-difficulty">
+        <select id="filter-difficulty" onChange={(e) => setSelectedDifficulty(e.target.value)}>
           <option value="" disabled>Seleccionar dificultad</option>
           {difficultyLevels.map(level => (
             <option key={level} value={level.charAt(0).toUpperCase() + level.slice(1)}>{level.charAt(0).toUpperCase() + level.slice(1)}</option>
           ))}
         </select>
-        <button id="apply-difficulty-filter">Aplicar filtro</button>
+        <button id="apply-difficulty-filter" onClick={filterTasksByDifficulty}>Aplicar filtro</button>
       </div>
-      <div className="priority-filter-container">
-        <button className="close-priority-filter">✖️</button>
+      <div className={`priority-filter-container ${visibleFilter === 'priority' ? '' : 'hidden'}`}>
+
+        <button className="close-priority-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
         <h2>Seleccionar Prioridad</h2>
-        <select id="filter-priority">
+        <select id="filter-priority" onChange={(e) => setSelectedPriority(e.target.value)}>
           <option value="" disabled selected>Seleccionar prioridad</option>
           {priorityLevels.map(p => (
             <option key={p} value={p}>{p}</option>
           ))}
         </select>
-        <button id="apply-priority-filter">Aplicar filtro</button>
+        <button id="apply-priority-filter" onClick={filterTasksByPriority}>Aplicar filtro</button>
       </div>
       {infoTaskId !== null && (
       <div className='edit-info-container'>       
