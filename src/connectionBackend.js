@@ -1,6 +1,5 @@
 const API_URL = 'http://localhost:8080';
 
-
 /**
  * Fetches all tasks by their state from the server.
  * 
@@ -240,6 +239,6 @@ const verifyTokenExists = () => {
     let token = localStorage.getItem('token');
     if(!token){
         alert("Sesión expirada, por favor inicia sesión nuevamente");
-        window.location.href = window.location.href;
+        window.location.href = '/loginSignUp';
     }
 }
