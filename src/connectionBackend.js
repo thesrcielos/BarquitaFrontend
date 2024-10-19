@@ -231,7 +231,7 @@ const verifyIfTokenHasExpired = (response) => {
     if(response.status === 403){
         localStorage.removeItem('token');
         alert("Sesión expirada, por favor inicia sesión nuevamente");
-        window.location.href = window.location.href;
+        window.location.href = '/loginSignUp';
     }
 }
 
