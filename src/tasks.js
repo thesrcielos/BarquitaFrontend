@@ -194,7 +194,6 @@ const Tasks = () => {
 
   // Función para filtrar las tareas por dificultad
 const filterTasksByDifficulty = () => {
-  console.log(selectedDifficulty);
   if (selectedDifficulty) {
     const newFilteredTasks = tasks.filter(task => task.difficulty === selectedDifficulty);
     setTasks(newFilteredTasks);

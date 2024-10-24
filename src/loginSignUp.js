@@ -37,17 +37,26 @@ const LoginSignUp = ()  => {
         let res = await login({ email, password });
 
         if(res.authenticated){
-            navigate('/tasks');
+            navigateUser(res.user);
         }else{
             alert(res.error);
         }
     }
 
+    const navigateUser = (user) => {
+        if(user === 'ROLE_USER'){
+            navigate('/tasks');
+        }else{
+            navigate('/admin');
+        }
+    }
     const submitSignUpInfo = async () => {
         let res = await register({ name, email, password });
 
         if(res.created){
-            navigate('/tasks');
+            if(res.user){
+                navigateUser(res.user);
+            }
         }else{
             alert(res.error);
         }

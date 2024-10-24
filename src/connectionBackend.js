@@ -1,4 +1,4 @@
-const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net/';
+const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
 
 /**
  * Fetches all tasks by their state from the server.
@@ -120,6 +120,74 @@ export async function updateTaskState(userId, id){
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
+}
+export async function getHistogramAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/eachUserHistogram`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+
+    return await response.json();
+}
+
+export async function getFinishedTasksByTimeAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/eachUserFinishedTasks`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function getAverageByPriorityAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/eachUserConsolidatedPriority`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function getTotalTimeSpentByDifficultyAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/eachUserConsolidatedPriority`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
 }
 
 export async function getHistogram(userId){

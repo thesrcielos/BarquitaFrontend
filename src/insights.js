@@ -4,7 +4,11 @@ import {
     getAverageByPriority,
     getTotalTimeSpentByDifficulty,
     getFinishedTasksByTime,
-    getUserIdFromEmail
+    getUserIdFromEmail,
+    getHistogramAllUsers,
+    getAverageByPriorityAllUsers,
+    getFinishedTasksByTimeAllUsers,
+    getTotalTimeSpentByDifficultyAllUsers
 } from './connectionBackend.js'
 import './insights.css'
 import { 
@@ -33,7 +37,7 @@ var averageTasksByPriority;
 var timeSpentByDifficult;
 var finishedTasksByTime;
 
-const Insights = () =>{
+const Insights = ({role}) =>{
     const [myChart, setMyChart] = useState(null);
     const chart = useRef(null);
     const[selectChart, setSelectChart] = useState('');
@@ -41,17 +45,23 @@ const Insights = () =>{
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const token = localStorage.getItem('token'); // O donde tengas el token guardado.
+            const token = localStorage.getItem('token');
             const decoded = jwtDecode(token);
             const email = decoded.sub;
 
             // Obtén el userId desde el email
             const userIdFromApi = (await getUserIdFromEmail(email)).userId;
-        
-            numberTasksByDifficult = await getHistogram(userIdFromApi);
-            averageTasksByPriority = await getAverageByPriority(userIdFromApi);
-            timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userIdFromApi);
-            finishedTasksByTime = await getFinishedTasksByTime(userIdFromApi);
+            if(role === 'Admin'){
+                numberTasksByDifficult = await  getHistogramAllUsers();
+                averageTasksByPriority = await getAverageByPriorityAllUsers();
+                timeSpentByDifficult = await getTotalTimeSpentByDifficultyAllUsers();
+                finishedTasksByTime = await getFinishedTasksByTimeAllUsers();
+            }else{
+                numberTasksByDifficult = await  getHistogram(userIdFromApi);
+                averageTasksByPriority = await getAverageByPriority(userIdFromApi);
+                timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userIdFromApi);
+                finishedTasksByTime = await getFinishedTasksByTime(userIdFromApi);
+            }
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -270,7 +280,6 @@ const Insights = () =>{
 
     return (
         <div>
-            <Home/>
             <div className="container-chart-choose">
             <form id="form-chart" onSubmit={drawChart}>
             <select name="selected-chart" id="select-chart" value={selectChart} 

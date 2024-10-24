@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { loginUser, registerUser } from './connectionBackend';
+import jwtDecode from 'jwt-decode';
 // Crear el contexto
 const AuthContext = createContext();
 
@@ -10,14 +11,31 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken !== null) {
-      console.log(typeof storedToken);
-      console.log(storedToken !== null);
       setIsAuthenticated(true);
+      role = getRolesFromToken(storedToken)[0];
+      navigate(role);
     }else{
       setIsAuthenticated(false);
     }
   }, []);
 
+  function getRolesFromToken(token) {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.roles || []; // Si no hay roles, retorna un array vacío
+    } catch (error) {
+      console.error("Token inválido:", error);
+      return [];
+    }
+  }
+
+  const navigate = (role) => {
+    if(user === 'ROLE_USER'){
+      navigate('/tasks');
+    }else{
+      navigate('/admin');
+    }
+  }
   const login = async ({email, password}) => {
     const userCredentials = { email: email, password:password };
     try{
@@ -28,7 +46,7 @@ export const AuthProvider = ({ children }) => {
       }
       const data = await response.json();
       handleSuccessfulAuthentication(data.token);
-      return {authenticated: true}
+      return {authenticated: true, role : getRolesFromToken(data.token)}
 
     }catch(e){
       return {authenticated: false, error:'Error vuelve a intentarlo mas tarde'};
@@ -46,7 +64,7 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       handleSuccessfulAuthentication(data.token);
   
-      return { created: true };
+      return { created: true, role : getRolesFromToken(data.token) };
     } catch (e) {
       console.error("Error en el registro:", e);
       return { created: false, error: 'Error vuelve a intentarlo mas tarde' };
