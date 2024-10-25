@@ -46,6 +46,22 @@ const LoginSignUp = ()  => {
         }
     }
 
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (regex.test(password)) {
+            return true;
+        }
+        return "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial (@$!%*?&). ";
+    }
+
+    function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if(regex.test(email)){
+            return true;
+        }
+        return "El email debe contener un letras seguido por @ más letras, con un punto (.) y más letras. ";
+    }
+
     const navigateUser = (role) => {
         if(role === 'USER'){
             navigate('/tasks');
@@ -54,12 +70,16 @@ const LoginSignUp = ()  => {
         }
     }
     const submitSignUpInfo = async () => {
-        let res = await register({ name, email, password });
+        const validationPassword = validatePassword(password);
+        const validationEmail = validateEmail(email);
+        if(validationPassword == true && validationEmail == true){
+            let res = await register({ name, email, password });
 
-        if(res.created){
-            navigateUser(res.role);
-        }else{
-            alert(res.error);
+            if(res.created){
+                navigateUser(res.role);
+            }else{
+                alert(res.error);
+            }
         }
     }
 

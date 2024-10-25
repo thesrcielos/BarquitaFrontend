@@ -83,7 +83,6 @@ export async function deleteTask(userId, id){
 export async function updateTask(userId, task){
     verifyTokenExists();
     const token = localStorage.getItem('token');
-    console.log(task);
     const response = await fetch(`${API_URL}/user/${userId}/updateTask`, {
         method: 'PUT',
         headers: {
