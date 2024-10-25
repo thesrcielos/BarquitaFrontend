@@ -256,7 +256,7 @@ const disableFilter = async () => {
       <div className="header">
         <h1>Mis tareas</h1>
         <div className="buttons">
-          <button className="disable-filter-buton" onClick={() => disableFilter()}>Eliminar filtros </button>
+          <button className="disable-filter-buton" onClick={() => disableFilter()}>Eliminar filtros 🗑️</button>
           <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝</button>
           <button className="order-by-difficulty-button" onClick={() => showFilter('difficulty')}>Ordenar por dificultad 👀</button>
           <button className="order-by-date-button" onClick={() => showFilter('date')}>Filtrar por fecha 📆</button>
