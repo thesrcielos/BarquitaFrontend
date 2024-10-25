@@ -512,3 +512,13 @@
   .nav-button:hover {
     background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
   }
+
+  .disable-filter-button {
+    background-color: #506574;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+  }

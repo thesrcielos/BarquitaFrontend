@@ -29,6 +29,7 @@ const Tasks = () => {
   const [selectedPriority, setSelectedPriority] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [visibleFilter, setVisibleFilter] = useState('none');
+  const [isAnyFilterActivate, setIsAnyFilterActivate] = useState(false);
 
   
   useEffect(() => {
@@ -201,6 +202,7 @@ const filterTasksByDifficulty = () => {
     const newFilteredTasksCompleted = tasksCompleted.filter(task => task.difficulty === selectedDifficulty);
     setTasksCompleted(newFilteredTasksCompleted);
     setVisibleFilter('none');
+    setIsAnyFilterActivate(true);
   }
 };
 
@@ -213,6 +215,7 @@ const filterTasksByPriority = () => {
     setTasksCompleted(newFilteredTasksCompleted);
     setSelectedPriority(selectedPriority);
     setVisibleFilter('none');
+    setIsAnyFilterActivate(true);
   }
 };
 
@@ -225,12 +228,26 @@ const filterTasksByDate = () => {
     setTasksCompleted(newFilteredTasksCompleted);
     setSelectedDate(selectedDate);
     setVisibleFilter('none');
+    setIsAnyFilterActivate(true);
   }
 }
 
 // Función para mostrar el formulario de los botones de filtrado
 const showFilter = (filterType) => {
     setVisibleFilter(filterType); // De lo contrario, lo mostramos
+};
+
+const disableFilter = async () => {
+  if (isAnyFilterActivate){
+      // Asegúrate de que userId se haya establecido antes de hacer las solicitudes de tareas
+      if (userId) {
+        const incompleteTasks = await getAllTasksByState(userId, false);
+        const completedTasks = await getAllTasksByState(userId, true);
+        setTasks(incompleteTasks);
+        setTasksCompleted(completedTasks);
+        setIsAnyFilterActivate(false);
+      }
+  }
 };
   
   return (
@@ -239,6 +256,7 @@ const showFilter = (filterType) => {
       <div className="header">
         <h1>Mis tareas</h1>
         <div className="buttons">
+          <button className="disable-filter-buton" onClick={() => disableFilter()}>Eliminar filtros </button>
           <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝</button>
           <button className="order-by-difficulty-button" onClick={() => showFilter('difficulty')}>Ordenar por dificultad 👀</button>
           <button className="order-by-date-button" onClick={() => showFilter('date')}>Filtrar por fecha 📆</button>
