@@ -1,7 +1,11 @@
 import Insights from "./insights";
-import "/App.css";
+import "./App.css";
+import { useAuth } from "./AuthenticationContext";
+import { Link } from 'react-router-dom';
+import React from "react";
 
 const AdminPage = () => {
+  const{logout} = useAuth();
     return <div>
         <nav>
       <ul className="nav-list">

@@ -1,41 +1,43 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { loginUser, registerUser } from './connectionBackend';
-import jwtDecode from 'jwt-decode';
-// Crear el contexto
+import { loginUser, registerUser, getUserDBInfo } from './connectionBackend';
+import {jwtDecode} from 'jwt-decode';
+
 const AuthContext = createContext();
 
 // Proveedor del contexto
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken !== null) {
-      setIsAuthenticated(true);
-      role = getRolesFromToken(storedToken)[0];
-      navigate(role);
-    }else{
-      setIsAuthenticated(false);
+  const verifyAuth = async () =>{
+      const storedToken = localStorage.getItem('token');
+      if (storedToken !== null) {
+        setIsAuthenticated(true);
+        let role = await getRoles(storedToken);
+        return {authenticated:true, role:role};
+      }else{
+        setIsAuthenticated(false);
+        return {authenticated:false};
+      }
     }
-  }, []);
 
-  function getRolesFromToken(token) {
+  
+  async function getRoles(token) {
     try {
-      const decoded = jwtDecode(token);
-      return decoded.roles || []; // Si no hay roles, retorna un array vacío
+      const email = jwtDecode(token).sub;
+      let user = await getUserDBInfo(email);
+      setUser(user);
+      return user.role;
     } catch (error) {
       console.error("Token inválido:", error);
       return [];
     }
   }
 
-  const navigate = (role) => {
-    if(user === 'ROLE_USER'){
-      navigate('/tasks');
-    }else{
-      navigate('/admin');
-    }
+  const getUserInfo = () =>{
+    return user;
   }
+
   const login = async ({email, password}) => {
     const userCredentials = { email: email, password:password };
     try{
@@ -46,7 +48,8 @@ export const AuthProvider = ({ children }) => {
       }
       const data = await response.json();
       handleSuccessfulAuthentication(data.token);
-      return {authenticated: true, role : getRolesFromToken(data.token)}
+      let role = await getRoles(data.token);
+      return {authenticated: true, role : role}
 
     }catch(e){
       return {authenticated: false, error:'Error vuelve a intentarlo mas tarde'};
@@ -63,8 +66,8 @@ export const AuthProvider = ({ children }) => {
   
       const data = await response.json();
       handleSuccessfulAuthentication(data.token);
-  
-      return { created: true, role : getRolesFromToken(data.token) };
+      let role = getRoles(data.token);
+      return { created: true, role : role };
     } catch (e) {
       console.error("Error en el registro:", e);
       return { created: false, error: 'Error vuelve a intentarlo mas tarde' };
@@ -102,7 +105,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register }}>
+    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth}}>
       {children}
     </AuthContext.Provider>
   );

@@ -6,12 +6,13 @@ import Tasks from './tasks';
 import ProtectedRoute from './ProtectedRoute';
 import InsightsUser from './insightsUser';
 import AdminPage from './adminPage';
+import { AuthProvider } from './AuthenticationContext';
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/loginSignUp" element={<LoginSignUp />} />
-      <Route path="/insightsuser" element={
+      <Route path="/insights" element={
         <ProtectedRoute>
           <InsightsUser />
         </ProtectedRoute>
@@ -21,11 +22,13 @@ const AppRoutes = () => {
           <Tasks/>
         </ProtectedRoute>
         } />
-        <Route path='/admin'>
+        <Route path='/admin'
+          element = {
           <ProtectedRoute>
               <AdminPage/>
           </ProtectedRoute>
-        </Route>
+          }
+        />
     </Routes>
   );
 }

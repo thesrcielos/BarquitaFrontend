@@ -4,7 +4,6 @@ import {
     getAverageByPriority,
     getTotalTimeSpentByDifficulty,
     getFinishedTasksByTime,
-    getUserIdFromEmail,
     getHistogramAllUsers,
     getAverageByPriorityAllUsers,
     getFinishedTasksByTimeAllUsers,
@@ -26,8 +25,8 @@ import {
     Tooltip, 
     Legend
 } from 'chart.js';
-import Home from './home.js';
 import { jwtDecode } from 'jwt-decode';
+import { useAuth } from './AuthenticationContext.js';
 
 // Registra todos los componentes que se van a usar
 Chart.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, PieController, LineController, BarController, Title, Tooltip, Legend);
@@ -37,11 +36,11 @@ var averageTasksByPriority;
 var timeSpentByDifficult;
 var finishedTasksByTime;
 
-const Insights = ({role}) =>{
+const Insights = () =>{
     const [myChart, setMyChart] = useState(null);
     const chart = useRef(null);
     const[selectChart, setSelectChart] = useState('');
-
+    const{ getUserInfo } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
           try {
@@ -50,17 +49,19 @@ const Insights = ({role}) =>{
             const email = decoded.sub;
 
             // Obtén el userId desde el email
-            const userIdFromApi = (await getUserIdFromEmail(email)).userId;
+            let userInfo = getUserInfo();
+            const userId = userInfo.usernameId;
+            const role = userInfo.role;
             if(role === 'Admin'){
                 numberTasksByDifficult = await  getHistogramAllUsers();
                 averageTasksByPriority = await getAverageByPriorityAllUsers();
                 timeSpentByDifficult = await getTotalTimeSpentByDifficultyAllUsers();
                 finishedTasksByTime = await getFinishedTasksByTimeAllUsers();
             }else{
-                numberTasksByDifficult = await  getHistogram(userIdFromApi);
-                averageTasksByPriority = await getAverageByPriority(userIdFromApi);
-                timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userIdFromApi);
-                finishedTasksByTime = await getFinishedTasksByTime(userIdFromApi);
+                numberTasksByDifficult = await  getHistogram(userId);
+                averageTasksByPriority = await getAverageByPriority(userId);
+                timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userId);
+                finishedTasksByTime = await getFinishedTasksByTime(userId);
             }
           } catch (error) {
             console.error('Error fetching data:', error);

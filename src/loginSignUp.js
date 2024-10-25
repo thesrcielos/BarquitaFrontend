@@ -8,7 +8,7 @@ import password_icon from './Assets/password.png'
 import { useAuth } from './AuthenticationContext';
 const LoginSignUp = ()  => {
 
-    const {login, isUserAuthenticated, register} = useAuth();
+    const {login, register, verifyAuth} = useAuth();
     const [action, setAction] = useState("Sign Up");
     const [submit, setSubmit] = useState("Crear Cuenta");
 
@@ -18,10 +18,14 @@ const LoginSignUp = ()  => {
     const navigate = useNavigate();
 
     useEffect(()=>{
-        if(isUserAuthenticated()){
-            navigate('/tasks');
+        const verify = async() => {
+            const res = await verifyAuth();
+            if(res.authenticated){
+                navigateUser(res.role);
+            }
         }
-    });
+        verify();
+    }, []);
 
     const selectLoginAction = () => {
         setAction("Login");
@@ -35,16 +39,15 @@ const LoginSignUp = ()  => {
 
     const submitLoginInfo = async ()  => {
         let res = await login({ email, password });
-
         if(res.authenticated){
-            navigateUser(res.user);
+            navigateUser(res.role);
         }else{
             alert(res.error);
         }
     }
 
-    const navigateUser = (user) => {
-        if(user === 'ROLE_USER'){
+    const navigateUser = (role) => {
+        if(role === 'USER'){
             navigate('/tasks');
         }else{
             navigate('/admin');
@@ -54,9 +57,7 @@ const LoginSignUp = ()  => {
         let res = await register({ name, email, password });
 
         if(res.created){
-            if(res.user){
-                navigateUser(res.user);
-            }
+            navigateUser(res.role);
         }else{
             alert(res.error);
         }
