@@ -1,22 +1,42 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { loginUser, registerUser } from './connectionBackend';
-// Crear el contexto
+import React, { createContext, useState, useContext} from 'react';
+import { loginUser, registerUser, getUserDBInfo } from './connectionBackend';
+import {jwtDecode} from 'jwt-decode';
+
 const AuthContext = createContext();
 
 // Proveedor del contexto
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    if (storedToken !== null) {
-      console.log(typeof storedToken);
-      console.log(storedToken !== null);
-      setIsAuthenticated(true);
-    }else{
-      setIsAuthenticated(false);
+  const verifyAuth = async () =>{
+      const storedToken = localStorage.getItem('token');
+      if (storedToken !== null) {
+        setIsAuthenticated(true);
+        let role = await getRoles(storedToken);
+        return {authenticated:true, role:role};
+      }else{
+        setIsAuthenticated(false);
+        return {authenticated:false};
+      }
     }
-  }, []);
+
+  
+  async function getRoles(token) {
+    try {
+      const email = jwtDecode(token).sub;
+      let user = await getUserDBInfo(email);
+      setUser(user);
+      return user.role;
+    } catch (error) {
+      console.error("Token inválido:", error);
+      return [];
+    }
+  }
+
+  const getUserInfo = () =>{
+    return user;
+  }
 
   const login = async ({email, password}) => {
     const userCredentials = { email: email, password:password };
@@ -28,7 +48,8 @@ export const AuthProvider = ({ children }) => {
       }
       const data = await response.json();
       handleSuccessfulAuthentication(data.token);
-      return {authenticated: true}
+      let role = await getRoles(data.token);
+      return {authenticated: true, role : role}
 
     }catch(e){
       return {authenticated: false, error:'Error vuelve a intentarlo mas tarde'};
@@ -45,8 +66,8 @@ export const AuthProvider = ({ children }) => {
   
       const data = await response.json();
       handleSuccessfulAuthentication(data.token);
-  
-      return { created: true };
+      let role = getRoles(data.token);
+      return { created: true, role : role };
     } catch (e) {
       console.error("Error en el registro:", e);
       return { created: false, error: 'Error vuelve a intentarlo mas tarde' };
@@ -84,7 +105,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register }}>
+    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth}}>
       {children}
     </AuthContext.Provider>
   );

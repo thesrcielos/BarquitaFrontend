@@ -4,7 +4,10 @@ import {
     getAverageByPriority,
     getTotalTimeSpentByDifficulty,
     getFinishedTasksByTime,
-    getUserIdFromEmail
+    getHistogramAllUsers,
+    getAverageByPriorityAllUsers,
+    getFinishedTasksByTimeAllUsers,
+    getTotalTimeSpentByDifficultyAllUsers
 } from './connectionBackend.js'
 import './insights.css'
 import { 
@@ -22,8 +25,7 @@ import {
     Tooltip, 
     Legend
 } from 'chart.js';
-import Home from './home.js';
-import { jwtDecode } from 'jwt-decode';
+import { useAuth } from './AuthenticationContext.js';
 
 // Registra todos los componentes que se van a usar
 Chart.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, PieController, LineController, BarController, Title, Tooltip, Legend);
@@ -37,21 +39,24 @@ const Insights = () =>{
     const [myChart, setMyChart] = useState(null);
     const chart = useRef(null);
     const[selectChart, setSelectChart] = useState('');
-
+    const{ getUserInfo } = useAuth();
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const token = localStorage.getItem('token'); // O donde tengas el token guardado.
-            const decoded = jwtDecode(token);
-            const email = decoded.sub;
-
-            // Obtén el userId desde el email
-            const userIdFromApi = (await getUserIdFromEmail(email)).userId;
-        
-            numberTasksByDifficult = await getHistogram(userIdFromApi);
-            averageTasksByPriority = await getAverageByPriority(userIdFromApi);
-            timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userIdFromApi);
-            finishedTasksByTime = await getFinishedTasksByTime(userIdFromApi);
+            let userInfo = getUserInfo();
+            const userId = userInfo.usernameId;
+            const role = userInfo.role;
+            if(role === 'ADMIN'){
+                numberTasksByDifficult = await  getHistogramAllUsers();
+                averageTasksByPriority = await getAverageByPriorityAllUsers();
+                timeSpentByDifficult = await getTotalTimeSpentByDifficultyAllUsers();
+                finishedTasksByTime = await getFinishedTasksByTimeAllUsers();
+            }else if(role === 'USER'){
+                numberTasksByDifficult = await  getHistogram(userId);
+                averageTasksByPriority = await getAverageByPriority(userId);
+                timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userId);
+                finishedTasksByTime = await getFinishedTasksByTime(userId);
+            }
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -270,7 +275,6 @@ const Insights = () =>{
 
     return (
         <div>
-            <Home/>
             <div className="container-chart-choose">
             <form id="form-chart" onSubmit={drawChart}>
             <select name="selected-chart" id="select-chart" value={selectChart} 

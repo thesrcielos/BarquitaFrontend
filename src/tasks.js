@@ -5,17 +5,16 @@ import {
   addTask,
   deleteTask,
   updateTask,
-  updateTaskState,
-  getUserIdFromEmail
+  updateTaskState
 } from './connectionBackend.js';
-
+import { useAuth } from './AuthenticationContext.js';
 import Home from './home.js';
-import {jwtDecode} from 'jwt-decode';
 
 const difficultyLevels = ['alta', 'media', 'baja'];
 const priorityLevels = ['1', '2', '3', '4', '5'];
 
 const Tasks = () => {
+  const {getUserInfo} = useAuth();
   const [tasks, setTasks] = useState([]);
   const [tasksCompleted, setTasksCompleted] = useState([]);
   const [isAddTaskVisible, setIsAddTaskVisible] = useState(false);
@@ -34,18 +33,13 @@ const Tasks = () => {
   
   useEffect(() => {
     const fetchUserIdAndTasks = async () => {
-      const token = localStorage.getItem('token'); // O donde tengas el token guardado.
-      const decoded = jwtDecode(token);
-      const email = decoded.sub;
+      const userInfo = getUserInfo();
+      const userIdInfo = userInfo.usernameId;
+      setUserId(userIdInfo);
 
-      // Obtén el userId desde el email
-      const userIdFromApi = (await getUserIdFromEmail(email)).userId;
-      setUserId(userIdFromApi);
-
-      // Asegúrate de que userId se haya establecido antes de hacer las solicitudes de tareas
-      if (userIdFromApi) {
-        const incompleteTasks = await getAllTasksByState(userIdFromApi, false);
-        const completedTasks = await getAllTasksByState(userIdFromApi, true);
+      if (userIdInfo) {
+        const incompleteTasks = await getAllTasksByState(userIdInfo, false);
+        const completedTasks = await getAllTasksByState(userIdInfo, true);
         setTasks(incompleteTasks);
         setTasksCompleted(completedTasks);
       }
@@ -195,7 +189,6 @@ const Tasks = () => {
 
   // Función para filtrar las tareas por dificultad
 const filterTasksByDifficulty = () => {
-  console.log(selectedDifficulty);
   if (selectedDifficulty) {
     const newFilteredTasks = tasks.filter(task => task.difficulty === selectedDifficulty);
     setTasks(newFilteredTasks);
@@ -487,7 +480,7 @@ const TaskInfo = ({task, onClose}) => {
         <p>Fecha límite: {dateFormat(task.deadline)}</p>
         <p>Dificultad: {task.difficulty}</p>
         <p>Prioridad: {task.priority}</p>
-        <p>Tiempo Estimado: {task.estimatedTime}</p>
+        <p>Tiempo Estimado: {task.estimatedTime} horas</p>
       </div>
     </div>
   );

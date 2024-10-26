@@ -8,7 +8,7 @@ import password_icon from './Assets/password.png'
 import { useAuth } from './AuthenticationContext';
 const LoginSignUp = ()  => {
 
-    const {login, isUserAuthenticated, register} = useAuth();
+    const {login, register, verifyAuth} = useAuth();
     const [action, setAction] = useState("Sign Up");
     const [submit, setSubmit] = useState("Crear Cuenta");
 
@@ -18,10 +18,14 @@ const LoginSignUp = ()  => {
     const navigate = useNavigate();
 
     useEffect(()=>{
-        if(isUserAuthenticated()){
-            navigate('/tasks');
+        const verify = async() => {
+            const res = await verifyAuth();
+            if(res.authenticated){
+                navigateUser(res.role);
+            }
         }
-    });
+        verify();
+    }, []);
 
     const selectLoginAction = () => {
         setAction("Login");
@@ -35,9 +39,8 @@ const LoginSignUp = ()  => {
 
     const submitLoginInfo = async ()  => {
         let res = await login({ email, password });
-
         if(res.authenticated){
-            navigate('/tasks');
+            navigateUser(res.role);
         }else{
             alert(res.error);
         }
@@ -56,25 +59,32 @@ const LoginSignUp = ()  => {
         if(regex.test(email)){
             return true;
         }
-        return "El email debe contener un letras seguido por @ más letras, con un punto (.) y más letras. ";
+        return "La estructura del Email es incorrecta ";
     }
 
+    const navigateUser = (role) => {
+        if(role === 'USER'){
+            navigate('/tasks');
+        }else if(role === 'ADMIN'){
+            navigate('/admin');
+        }
+    }
     const submitSignUpInfo = async () => {
         const validationPassword = validatePassword(password);
         const validationEmail = validateEmail(email);
         if(validationPassword == true && validationEmail == true){
             let res = await register({ name, email, password });
             if(res.created){
-                navigate('/tasks');
+                navigateUser(res.role);
             }else{
                 alert(res.error);
             }
         }
-        else{
-            let message = "";
-            message = validationEmail != true ? message + validationEmail : message;
-            message = validationPassword != true ? message + validationPassword : message;
-            alert(message);
+        if(validationPassword !== true){
+            alert(validationPassword);
+        }
+        if(validationEmail !== true){
+            alert(validationEmail);
         }
     }
 

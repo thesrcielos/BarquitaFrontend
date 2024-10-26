@@ -3,16 +3,23 @@ import { Routes, Route } from 'react-router-dom';
 
 import LoginSignUp from './loginSignUp';
 import Tasks from './tasks';
-import Insights from './insights';
 import ProtectedRoute from './ProtectedRoute';
+import InsightsUser from './insightsUser';
+import AdminPanel from './AdminPanel';
+import InsightsAdmin from './insightsAdmin';
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/loginSignUp" element={<LoginSignUp />} />
-      <Route path="/insights" element={
+      <Route path="/" element={<LoginSignUp />} />
+      <Route path="/insightsUser" element={
         <ProtectedRoute>
-          <Insights />
+          <InsightsUser />
+        </ProtectedRoute>
+        } />
+        <Route path="/insightsAdmin" element={
+        <ProtectedRoute>
+          <InsightsAdmin/>
         </ProtectedRoute>
         } />
       <Route path="/tasks" element={
@@ -20,6 +27,13 @@ const AppRoutes = () => {
           <Tasks/>
         </ProtectedRoute>
         } />
+        <Route path="/admin"
+          element = {
+          <ProtectedRoute>
+              <AdminPanel/>
+          </ProtectedRoute>
+          }
+        />
     </Routes>
   );
 }
