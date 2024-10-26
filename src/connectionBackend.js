@@ -1,4 +1,4 @@
-const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net/';
+const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
 
 /**
  * Fetches all tasks by their state from the server.
@@ -10,7 +10,7 @@ const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azureweb
 export async function getAllTasksByState(userId, state) {
     verifyTokenExists();
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_URL}/${userId}/getTasksByState?state=${state}`, {
+    const response = await fetch(`${API_URL}/user/${userId}/getTasksByState?state=${state}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -35,8 +35,7 @@ export async function getAllTasksByState(userId, state) {
 export async function addTask(userId, task){
     verifyTokenExists();
     const token = localStorage.getItem('token');
-    console.log(token);
-    const response = await fetch(`${API_URL}/${userId}/addTask`, {
+    const response = await fetch(`${API_URL}/user/${userId}/addTask`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -61,7 +60,7 @@ export async function addTask(userId, task){
 export async function deleteTask(userId, id){
     verifyTokenExists();
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_URL}/${userId}/deleteTask?id=${id}`, {
+    const response = await fetch(`${API_URL}/user/${userId}/deleteTask?id=${id}`, {
         method: 'DELETE',
         headers: {
                 'Content-Type': 'application/json',
@@ -84,8 +83,7 @@ export async function deleteTask(userId, id){
 export async function updateTask(userId, task){
     verifyTokenExists();
     const token = localStorage.getItem('token');
-    console.log(task);
-    const response = await fetch(`${API_URL}/${userId}/updateTask`, {
+    const response = await fetch(`${API_URL}/user/${userId}/updateTask`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -99,6 +97,38 @@ export async function updateTask(userId, task){
     }
 }
 
+export async function getUsers() {
+    verifyTokenExists();
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/admin/getUsers`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function deleteUser(id) {
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/delUser?userId=${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+}
 /**
  * Updates the state of a task on the server by its ID.
  * 
@@ -109,7 +139,7 @@ export async function updateTask(userId, task){
 export async function updateTaskState(userId, id){
     const token = localStorage.getItem('token');
     verifyTokenExists();
-    const response = await fetch(`${API_URL}/${userId}/changeStateTask?id=${id}`, {
+    const response = await fetch(`${API_URL}/user/${userId}/changeStateTask?id=${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -120,6 +150,74 @@ export async function updateTaskState(userId, id){
     if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
     }
+}
+export async function getHistogramAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/usersHistogram`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+
+    return await response.json();
+}
+
+export async function getFinishedTasksByTimeAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/usersFinishedTasks`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function getAverageByPriorityAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/usersConsolidatedPriority`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
+}
+
+export async function getTotalTimeSpentByDifficultyAllUsers(){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/api/admin/usersTimeSpentByDifficulty`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+    return await response.json();
 }
 
 export async function getHistogram(userId){
@@ -192,7 +290,7 @@ export async function getTotalTimeSpentByDifficulty(userId){
 }
 
 export async function loginUser(userCredentials) {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_URL}/user/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -203,7 +301,7 @@ export async function loginUser(userCredentials) {
 }
 
 export async function registerUser(user) {
-    const response = await fetch(`${API_URL}/createUser`, {
+    const response = await fetch(`${API_URL}/user/createUser`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -213,10 +311,11 @@ export async function registerUser(user) {
     return response;
 }
 
-export async function getUserIdFromEmail(email) {
+
+export async function getUserDBInfo(email) {
     const token = localStorage.getItem('token');
     verifyTokenExists();
-    const response = await fetch(`${API_URL}/getUserId?email=${email}`, {
+    const response = await fetch(`${API_URL}/user/getRole?email=${email}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -231,7 +330,7 @@ const verifyIfTokenHasExpired = (response) => {
     if(response.status === 403){
         localStorage.removeItem('token');
         alert("Sesión expirada, por favor inicia sesión nuevamente");
-        window.location.href = '/loginSignUp';
+        window.location.href = '/';
     }
 }
 
@@ -239,6 +338,6 @@ const verifyTokenExists = () => {
     let token = localStorage.getItem('token');
     if(!token){
         alert("Sesión expirada, por favor inicia sesión nuevamente");
-        window.location.href = '/loginSignUp';
+        window.location.href = '/';
     }
 }

@@ -11,10 +11,10 @@ const Home = () => {
           <Link to="/tasks" className="nav-button">Home</Link>
         </li>
         <li>
-          <Link to="/insights" className="nav-button">Insights</Link>
+          <Link to="/insightsUser" className="nav-button">Insights</Link>
         </li>
         <li>
-          <Link to="/loginSignUp" className="nav-button" onClick={logout}>Logout</Link>
+          <Link to="/" className="nav-button" onClick={logout}>Logout</Link>
         </li>
       </ul>
     </nav>

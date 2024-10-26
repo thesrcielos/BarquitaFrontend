@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './loginSignUp.css';
@@ -8,7 +8,7 @@ import password_icon from './Assets/password.png'
 import { useAuth } from './AuthenticationContext';
 const LoginSignUp = ()  => {
 
-    const {login, isUserAuthenticated, register} = useAuth();
+    const {login, register, verifyAuth} = useAuth();
     const [action, setAction] = useState("Sign Up");
     const [submit, setSubmit] = useState("Crear Cuenta");
 
@@ -17,11 +17,23 @@ const LoginSignUp = ()  => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    useEffect(()=>{
-        if(isUserAuthenticated()){
+    const navigateUser = useCallback((role) => {
+        if(role === 'USER'){
             navigate('/tasks');
+        }else if(role === 'ADMIN'){
+            navigate('/admin');
         }
-    });
+    }, [navigate]);
+
+    useEffect(()=>{
+        const verify = async() => {
+            const res = await verifyAuth();
+            if(res.authenticated){
+                navigateUser(res.role);
+            }
+        }
+        verify();
+    }, [verifyAuth, navigateUser]);
 
     const selectLoginAction = () => {
         setAction("Login");
@@ -35,21 +47,45 @@ const LoginSignUp = ()  => {
 
     const submitLoginInfo = async ()  => {
         let res = await login({ email, password });
-
         if(res.authenticated){
-            navigate('/tasks');
+            navigateUser(res.role);
         }else{
             alert(res.error);
         }
     }
 
-    const submitSignUpInfo = async () => {
-        let res = await register({ name, email, password });
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (regex.test(password)) {
+            return true;
+        }
+        return "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial (@$!%*?&). ";
+    }
 
-        if(res.created){
-            navigate('/tasks');
-        }else{
-            alert(res.error);
+    function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if(regex.test(email)){
+            return true;
+        }
+        return "La estructura del Email es incorrecta ";
+    }
+
+    const submitSignUpInfo = async () => {
+        const validationPassword = validatePassword(password);
+        const validationEmail = validateEmail(email);
+        if(validationPassword === true && validationEmail === true){
+            let res = await register({ name, email, password });
+            if(res.created){
+                navigateUser(res.role);
+            }else{
+                alert(res.error);
+            }
+        }
+        if(validationPassword !== true){
+            alert(validationPassword);
+        }
+        if(validationEmail !== true){
+            alert(validationEmail);
         }
     }
 
