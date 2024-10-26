@@ -63,7 +63,8 @@ const Insights = () =>{
         };
       
         fetchData();
-      }, []);
+      }, [getUserInfo]);
+
 
     const drawChart = (e) =>{
         e.preventDefault();

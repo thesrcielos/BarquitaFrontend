@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext} from 'react';
+import React, { createContext, useState, useContext, useCallback} from 'react';
 import { loginUser, registerUser, getUserDBInfo } from './connectionBackend';
 import {jwtDecode} from 'jwt-decode';
 
@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
         return {authenticated:false};
       }
     }
-
   
   async function getRoles(token) {
     try {
@@ -34,9 +33,8 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const getUserInfo = () =>{
-    return user;
-  }
+  const getUserInfo = useCallback(() =>{
+    return user}, [user]);
 
   const login = async ({email, password}) => {
     const userCredentials = { email: email, password:password };

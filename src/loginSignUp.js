@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './loginSignUp.css';
@@ -17,6 +17,14 @@ const LoginSignUp = ()  => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
+    const navigateUser = useCallback((role) => {
+        if(role === 'USER'){
+            navigate('/tasks');
+        }else if(role === 'ADMIN'){
+            navigate('/admin');
+        }
+    }, [navigate]);
+
     useEffect(()=>{
         const verify = async() => {
             const res = await verifyAuth();
@@ -25,7 +33,7 @@ const LoginSignUp = ()  => {
             }
         }
         verify();
-    }, []);
+    }, [verifyAuth, navigateUser]);
 
     const selectLoginAction = () => {
         setAction("Login");
@@ -62,17 +70,10 @@ const LoginSignUp = ()  => {
         return "La estructura del Email es incorrecta ";
     }
 
-    const navigateUser = (role) => {
-        if(role === 'USER'){
-            navigate('/tasks');
-        }else if(role === 'ADMIN'){
-            navigate('/admin');
-        }
-    }
     const submitSignUpInfo = async () => {
         const validationPassword = validatePassword(password);
         const validationEmail = validateEmail(email);
-        if(validationPassword == true && validationEmail == true){
+        if(validationPassword === true && validationEmail === true){
             let res = await register({ name, email, password });
             if(res.created){
                 navigateUser(res.role);

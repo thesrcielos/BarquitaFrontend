@@ -46,7 +46,7 @@ const Tasks = () => {
     };
 
     fetchUserIdAndTasks();
-  }, []);
+  }, [getUserInfo]);
 
   const toggleMenu = (id) => {
     setMenuVisible(menuVisible === id ? null : id);
