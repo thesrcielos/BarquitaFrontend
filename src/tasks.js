@@ -5,12 +5,10 @@ import {
   addTask,
   deleteTask,
   updateTask,
-  updateTaskState,
-  getUserIdFromEmail
+  updateTaskState
 } from './connectionBackend.js';
 import { useAuth } from './AuthenticationContext.js';
 import Home from './home.js';
-import {jwtDecode} from 'jwt-decode';
 
 const difficultyLevels = ['alta', 'media', 'baja'];
 const priorityLevels = ['1', '2', '3', '4', '5'];
@@ -36,12 +34,9 @@ const Tasks = () => {
   useEffect(() => {
     const fetchUserIdAndTasks = async () => {
       const userInfo = getUserInfo();
-      console.log(userInfo);
-      // Obtén el userId desde el email
       const userIdInfo = userInfo.usernameId;
       setUserId(userIdInfo);
 
-      // Asegúrate de que userId se haya establecido antes de hacer las solicitudes de tareas
       if (userIdInfo) {
         const incompleteTasks = await getAllTasksByState(userIdInfo, false);
         const completedTasks = await getAllTasksByState(userIdInfo, true);
@@ -485,7 +480,7 @@ const TaskInfo = ({task, onClose}) => {
         <p>Fecha límite: {dateFormat(task.deadline)}</p>
         <p>Dificultad: {task.difficulty}</p>
         <p>Prioridad: {task.priority}</p>
-        <p>Tiempo Estimado: {task.estimatedTime}</p>
+        <p>Tiempo Estimado: {task.estimatedTime} horas</p>
       </div>
     </div>
   );

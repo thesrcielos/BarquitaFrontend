@@ -59,13 +59,13 @@ const LoginSignUp = ()  => {
         if(regex.test(email)){
             return true;
         }
-        return "El email debe contener un letras seguido por @ más letras, con un punto (.) y más letras. ";
+        return "La estructura del Email es incorrecta ";
     }
 
     const navigateUser = (role) => {
         if(role === 'USER'){
             navigate('/tasks');
-        }else{
+        }else if(role === 'ADMIN'){
             navigate('/admin');
         }
     }
@@ -74,12 +74,17 @@ const LoginSignUp = ()  => {
         const validationEmail = validateEmail(email);
         if(validationPassword == true && validationEmail == true){
             let res = await register({ name, email, password });
-
             if(res.created){
                 navigateUser(res.role);
             }else{
                 alert(res.error);
             }
+        }
+        if(validationPassword !== true){
+            alert(validationPassword);
+        }
+        if(validationEmail !== true){
+            alert(validationEmail);
         }
     }
 

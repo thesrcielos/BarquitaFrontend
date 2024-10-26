@@ -25,7 +25,6 @@ import {
     Tooltip, 
     Legend
 } from 'chart.js';
-import { jwtDecode } from 'jwt-decode';
 import { useAuth } from './AuthenticationContext.js';
 
 // Registra todos los componentes que se van a usar
@@ -44,20 +43,15 @@ const Insights = () =>{
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const token = localStorage.getItem('token');
-            const decoded = jwtDecode(token);
-            const email = decoded.sub;
-
-            // Obtén el userId desde el email
             let userInfo = getUserInfo();
             const userId = userInfo.usernameId;
             const role = userInfo.role;
-            if(role === 'Admin'){
+            if(role === 'ADMIN'){
                 numberTasksByDifficult = await  getHistogramAllUsers();
                 averageTasksByPriority = await getAverageByPriorityAllUsers();
                 timeSpentByDifficult = await getTotalTimeSpentByDifficultyAllUsers();
                 finishedTasksByTime = await getFinishedTasksByTimeAllUsers();
-            }else{
+            }else if(role === 'USER'){
                 numberTasksByDifficult = await  getHistogram(userId);
                 averageTasksByPriority = await getAverageByPriority(userId);
                 timeSpentByDifficult = await getTotalTimeSpentByDifficulty(userId);
