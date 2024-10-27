@@ -8,20 +8,24 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const verifyAuth = async () =>{
+      setLoading(true);
       const storedToken = localStorage.getItem('token');
       if (storedToken !== null) {
         setIsAuthenticated(true);
         let role = await getRoles(storedToken);
+        setLoading(false);
         return {authenticated:true, role:role};
       }else{
         setIsAuthenticated(false);
+        setLoading(false);
         return {authenticated:false};
       }
     }
   
-  async function getRoles(token) {
+  const getRoles = useCallback(async (token) => {
     try {
       const email = jwtDecode(token).sub;
       let user = await getUserDBInfo(email);
@@ -31,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Token inválido:", error);
       return [];
     }
-  }
+  }, []);
 
   const getUserInfo = useCallback(() =>{
     return user}, [user]);
@@ -103,7 +107,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth}}>
+    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth, loading}}>
       {children}
     </AuthContext.Provider>
   );

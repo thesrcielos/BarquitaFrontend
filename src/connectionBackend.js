@@ -100,7 +100,7 @@ export async function updateTask(userId, task){
 export async function getUsers() {
     verifyTokenExists();
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_URL}/admin/getUsers`, {
+    const response = await fetch(`${API_URL}/api/admin/getUsers`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
