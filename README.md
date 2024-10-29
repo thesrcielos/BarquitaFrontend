@@ -4,12 +4,11 @@
 
 Este proyecto es una implementación de una aplicación web para la 
 gestión de tareas personales. En este repositorio se encuentra el 
-desarrollo del Backend. El objetivo principal fue afianzar 
-nuestros conocimientos en el uso del framework Spring Boot y 
+desarrollo del Frontend. El objetivo principal fue afianzar 
+nuestros conocimientos en el uso de React y 
 desarrollar habilidades con herramientas clave del ecosistema de 
-desarrollo de software, como JACOCO para el análisis de cobertura, 
-Maven para la gestión del proyecto, y SonarQube, en conjunto con 
-Docker, para el análisis de código. Además, integramos Azure 
+desarrollo de software, como npm para la gestión del proyecto, 
+JWT para la Autenticación y Autorizacion. Además, integramos Azure 
 DevOps para aplicar la metodología SCRUM, lo que nos permitió aprender 
 a trabajar en equipo en entornos de desarrollo organizados y realizar 
 un seguimiento eficiente de las tareas. El proyecto se estructuró en 
