@@ -109,3 +109,17 @@ Contras:
     
 ### Libreria Escogida:
 La librería que decidimos escoger fue la de Chart.js debido a que es una de las más sencillas de aprender y es bastante simple su implementación. Además, en un proyecto pequeño como este el uso de esta librería es mas que suficiente.
+
+
+### Contribución
+
+Si deseas contribuir a nuestro proyecto, 
+te invitamos a hacer un fork del repositorio y enviar una Pull Request 
+(PR). Agradecemos cualquier comentario o retroalimentación que 
+nos ayude a mejorar y continuar creciendo.
+
+## Colaboradores
+* [Diego Macia]()
+* [Daniel Aldana]()
+* [Santiago Avellaneda]()
+* [Miguel Motta]()
