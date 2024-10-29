@@ -60,6 +60,10 @@ un seguimiento eficiente de las tareas. El proyecto se estructuró en
    ```
    npm start
    ```
+## Mockup de la aplicación
+![img](./assets/mockup.png)
+
+
 ## Librerías para la generación de gráficos
 ### 1.D3.js
 Pros:
@@ -110,6 +114,21 @@ Contras:
 ### Libreria Escogida:
 La librería que decidimos escoger fue la de Chart.js debido a que es una de las más sencillas de aprender y es bastante simple su implementación. Además, en un proyecto pequeño como este el uso de esta librería es mas que suficiente.
 
+#### Gráficas
+#### Número de Tareas por Prioridad
+![img](./assets/prioridad.png)
+
+
+#### Número de Tareas Terminadas por Tiempo
+![img](./assets/portiempo.png)
+
+
+#### Tiempo Total por Tareas Realizadas
+![img](./assets/tareasrealizadas.png)
+
+
+#### Número de Tareas por Dificutad
+![img](./assets/dificultad.png)
 
 ### Contribución
 
