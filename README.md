@@ -36,9 +36,8 @@ un seguimiento eficiente de las tareas. El proyecto se estructuró en
 
 ## Requisitos del Sistema
 
-- Java OpenJDK Runtime Environment: 17.x.x
-- Apache Maven: 3.9.x
-- Docker
+- Node.js: 17.x.x
+- npm: 10.x.x
 
 ## Configuración del Proyecto
 
