@@ -5,10 +5,13 @@ import {
   addTask,
   deleteTask,
   updateTask,
-  updateTaskState
+  updateTaskState,
+    changeUserName,
+    changeUserPassword
 } from './connectionBackend.js';
 import { useAuth } from './AuthenticationContext.js';
 import Home from './home.js';
+import user_icon from "./Assets/person.png";
 
 const difficultyLevels = ['alta', 'media', 'baja'];
 const priorityLevels = ['1', '2', '3', '4', '5'];
@@ -29,6 +32,12 @@ const Tasks = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [visibleFilter, setVisibleFilter] = useState('none');
   const [isAnyFilterActivate, setIsAnyFilterActivate] = useState(false);
+  const [isProfileWebSiteShowed, setIsProfileWebSiteShowed] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
 
   
   useEffect(() => {
@@ -36,7 +45,8 @@ const Tasks = () => {
       const userInfo = getUserInfo();
       const userIdInfo = userInfo.usernameId;
       setUserId(userIdInfo);
-
+      setUserName(userIdInfo.name);
+      setUserEmail(userIdInfo.email);
       if (userIdInfo) {
         const incompleteTasks = await getAllTasksByState(userIdInfo, false);
         const completedTasks = await getAllTasksByState(userIdInfo, true);
@@ -242,15 +252,48 @@ const disableFilter = async () => {
       }
   }
 };
+
+const validatePassword = (password) => {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&]{8,}$/;
+  if (regex.test(password)) {
+    return true;
+  }
+  return "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial (@$!%*?&). ";
+}
+
+const handleSave = async () => {
+  const isValidPassword = validatePassword(userPassword)
+  if (isValidPassword === true){
+    await changeUserName(userId, userName);
+    await changeUserPassword(userId, userPassword);
+    setUserPassword('');
+    setIsEditingProfile(false);
+  }
+  else{
+    const userInfo = getUserInfo();
+    setUserName(userInfo.name);
+    alert(isValidPassword)
+  }
+
+}
   
   return (
     <div className="app-container">
       <Home/>
       <div className="header">
-        <h1>Mis tareas</h1>
+        <div className="task-menu">
+          <h1>Mis tareas</h1>
+          <div className="profile-button-container">
+            <button className="profile-button" onClick={() => setIsProfileWebSiteShowed(true)}>
+              <img src={user_icon} alt=""/>
+              Perfil
+            </button>
+          </div>
+        </div>
         <div className="buttons">
           <button className="disable-filter-buton" onClick={() => disableFilter()}>Eliminar filtros 🗑️</button>
-          <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝</button>
+          <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝
+          </button>
           <button className="order-by-difficulty-button" onClick={() => showFilter('difficulty')}>Ordenar por dificultad 👀</button>
           <button className="order-by-date-button" onClick={() => showFilter('date')}>Filtrar por fecha 📆</button>
           <button className="add-task-button" onClick={showAddTaskForm}>Agregar tarea ➕</button>
@@ -320,29 +363,85 @@ const disableFilter = async () => {
         </div>
       </div>
       )}
+      {isProfileWebSiteShowed === true && (
+          <div className="user-info">
+            {isEditingProfile === true && (
+                <div>
+                  <div className="form-group">
+                    <label htmlFor="userName">Nombre:</label>
+                    <input
+                        id="userName"
+                        type="text"
+                        placeholder="Nombre"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="userPassword">Contraseña:</label>
+                    <input
+                        id="userPassword"
+                        type="password"
+                        placeholder="Contraseña"
+                        value={userPassword}
+                        onChange={(e) => setUserPassword(e.target.value)}
+                        className="input-field"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword">Confirmar Contraseña:</label>
+                    <input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="Confirmar Contraseña"
+                        className="input-field"
+                    />
+                  </div>
+
+                  <button onClick={handleSave} className="button-save">Guardar</button>
+                  <button onClick={() => setIsEditingProfile(false)} className="button-close-edit-profile">Cerrar
+                  </button>
+                </div>
+            )}
+            {isEditingProfile === false && (
+                <div>
+                  <p><strong>Nombre:</strong> {userName}</p>
+                  <p><strong>Correo:</strong> {userEmail}</p>
+                  <button onClick={() => setIsEditingProfile(true)} className="edit-user-information-button">Editar
+                  </button>
+                  <button onClick={() => setIsProfileWebSiteShowed(false)}
+                          className="close-user-information-button">Cerrar
+                  </button>
+                </div>
+            )}
+          </div>
+      )}
       {/**Hacer visible el formulario de filtrar por prioridad */}
       {visibleFilter === 'priority' && (
-      <div className='filter-container'>
-        <div className="priority-filter-container">
-        <button className="close-priority-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
-        <h2>Seleccionar Prioridad</h2>
-        <select id="filter-priority" onChange={(e) => setSelectedPriority(e.target.value)}>
-          <option value="" disabled selected>Seleccionar prioridad</option>
-          {priorityLevels.map(p => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
-        <button id="apply-priority-filter" onClick={filterTasksByPriority}>Aplicar filtro</button>
-        </div>
-      </div>
+          <div className='filter-container'>
+            <div className="priority-filter-container">
+              <button className="close-priority-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
+              <h2>Seleccionar Prioridad</h2>
+              <select id="filter-priority" onChange={(e) => setSelectedPriority(e.target.value)}>
+                <option value="" disabled selected>Seleccionar prioridad</option>
+                {priorityLevels.map(p => (
+                    <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+              <button id="apply-priority-filter" onClick={filterTasksByPriority}>Aplicar filtro</button>
+            </div>
+          </div>
       )}
-      
+
       {infoTaskId !== null && (
-      <div className='edit-info-container'>       
-          <AddEditForm
-            onEditTask={handleUpdateTask}
-            onClose={closeEditForm}
-            task={getTaskById(infoTaskId)}
+          <div className='edit-info-container'>
+            <AddEditForm
+                onEditTask={handleUpdateTask}
+                onClose={closeEditForm}
+                task={getTaskById(infoTaskId)}
           />
       </div>
       )}
