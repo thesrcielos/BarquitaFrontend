@@ -37,6 +37,7 @@ const Tasks = () => {
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [userConfirmPassword, setUserConfirmPassword] = useState('');
 
 
   
@@ -264,10 +265,17 @@ const validatePassword = (password) => {
 const handleSave = async () => {
   const isValidPassword = validatePassword(userPassword)
   if (isValidPassword === true){
-    await changeUserName(userId, userName);
-    await changeUserPassword(userId, userPassword);
-    setUserPassword('');
-    setIsEditingProfile(false);
+    if (userPassword === userConfirmPassword) {
+      await changeUserName(userId, userName);
+      await changeUserPassword(userId, userPassword);
+      setUserPassword('');
+      setIsEditingProfile(false);
+    }
+    else {
+      const userInfo = getUserInfo();
+      setUserName(userInfo.name);
+      alert("La contraseña no coincide")
+    }
   }
   else{
     const userInfo = getUserInfo();
@@ -397,6 +405,8 @@ const handleSave = async () => {
                         id="confirmPassword"
                         type="password"
                         placeholder="Confirmar Contraseña"
+                        value={userConfirmPassword}
+                        onChange={(e) => setUserConfirmPassword(e.target.value)}
                         className="input-field"
                     />
                   </div>
