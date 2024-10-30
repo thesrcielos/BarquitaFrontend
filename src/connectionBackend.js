@@ -1,4 +1,4 @@
-const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
+const API_URL = 'http://localhost:8080';
 
 /**
  * Fetches all tasks by their state from the server.
@@ -339,5 +339,51 @@ const verifyTokenExists = () => {
     if(!token){
         alert("Sesión expirada, por favor inicia sesión nuevamente");
         window.location.href = '/';
+    }
+}
+
+/**
+ * Updates the username by its ID.
+ *
+ * @param {number} id - The ID of the task whose state is to be updated.
+ * @returns {Promise<void>} - A promise that resolves when the task's state is updated.
+ * @throws {Error} - Logs any encountered errors.
+ */
+export async function changeUserName(userId, newName){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/user/changeName?userId=${userId}&newName=${newName}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+    }
+}
+
+/**
+ * Updates the user password by its ID.
+ *
+ * @param {number} id - The ID of the task whose state is to be updated.
+ * @returns {Promise<void>} - A promise that resolves when the task's state is updated.
+ * @throws {Error} - Logs any encountered errors.
+ */
+export async function changeUserPassword(userId, newPassword){
+    const token = localStorage.getItem('token');
+    verifyTokenExists();
+    const response = await fetch(`${API_URL}/user/changeName?userId=${userId}&newName=${newPassword}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    verifyIfTokenHasExpired(response);
+    if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
     }
 }

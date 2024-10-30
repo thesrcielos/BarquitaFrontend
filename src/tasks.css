@@ -29,6 +29,7 @@
     color: black;
     margin: 5px;
     padding: 5px;
+    text-align: center;
   }
   h2{
     color: black;
@@ -389,7 +390,6 @@
   }
   
   .difficulty-filter-container,  .priority-filter-container {
-
     position: fixed;
     top: 50%;
     left: 50%;
@@ -514,11 +514,165 @@
   }
 
   .disable-filter-button {
-    background-color: #506574;
+    background-color: #ff5c3a;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-bottom: 20px;
+    opacity: 1;
   }
+
+/* Contenedor principal de la información del usuario */
+.user-info {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 2px solid #ccc;
+  z-index: 100;
+}
+
+/* Texto para el nombre y el correo */
+.user-info p {
+  margin: 12px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Estilo para los campos de entrada (input) */
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: #2196f3;
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+/* Botones de la interfaz */
+.button, .button-close-edit-profile, .edit-user-information-button, .close-user-information-button, .button-save {
+  padding: 10px 20px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-save:hover {
+  background-color: #45A049;
+}
+
+.button-close-edit-profile:hover {
+  background-color: #e53935;
+}
+
+/* Estilo para el botón de editar la información */
+.edit-user-information-button {
+  background-color: #2196f3;
+  color: white;
+}
+
+.edit-user-information-button:hover {
+  background-color: #1e88e5;
+}
+
+/* Estilo para el botón de cerrar perfil */
+.close-user-information-button {
+  background-color: #FF5722;
+  color: white;
+}
+
+.close-user-information-button:hover {
+  background-color: #f4511e;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007BFF; /* Color azul */
+  text-decoration: none;
+  border-radius: 10000px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  gap: 8px; /* Espacio entre imagen y texto */
+}
+.profile-button:hover {
+  background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+}
+
+.profile-button-container {
+  margin-left: auto; /* Empuja el botón hacia la derecha */
+}
+
+.task-menu {
+  display: flex;
+  align-items: center;         /* Alinea verticalmente el título y el botón */
+  justify-content: space-between; /* Distribuye el contenido a los extremos */
+  width: 100%;                 /* Abarca todo el ancho de la pantalla */
+  padding: 0 20px;             /* Agrega algo de margen en los lados */
+}
+
+.task-menu h1 {
+  color: black;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* Mueve el título al centro */
+  font-size: 24px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  width: 150px; /* Ancho para los nombres de los campos */
+  font-weight: bold;
+}
+
+.input-field {
+  flex: 1; /* Hace que el campo de entrada ocupe el espacio restante */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button-save,
+.button-close-edit-profile {
+  margin-right: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-save {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.button-close-edit-profile {
+  background-color: #f44336;
+  color: white;
+}
