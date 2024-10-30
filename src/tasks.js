@@ -135,13 +135,14 @@ const Tasks = () => {
             key={task.id}
             task={task}
             onDelete={onDelete}
+            completed={false}
           />
         ))}
       </div>
     );
   };
 
-  const Task = ({ task, onDelete}) => {
+  const Task = ({ task, onDelete, completed}) => {
     const handleEdit = () => {
       setInfoTaskId(task.id);
       toggleMenu(null);
@@ -159,7 +160,7 @@ const Tasks = () => {
         {menuVisible === task.id && (
         <div className={`dropdown-content`}>
           <button className={`edit-btn`} onClick={() => handleEdit()}>✏️ Editar</button>
-          <button className={`delete-btn`} onClick={()=>onDelete(task.id)}>🗑️ Eliminar</button>
+          <button className={`delete-btn`} onClick={()=>onDelete(task.id, completed)}>🗑️ Eliminar</button>
           <label className={`checkbox-button`}>
             <input type="checkbox" className={`myCheckbox`} checked={task.state}
             name="myCheckbox" value="no" onChange={() => handleChangeStateTask(task)}/>
@@ -181,6 +182,7 @@ const Tasks = () => {
             task={task}
             onDelete={onDelete}
             onUpdate={onUpdate}
+            completed={true}
           />
         ))}
       </div>
