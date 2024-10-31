@@ -26,6 +26,8 @@ import {
     Legend
 } from 'chart.js';
 import { useAuth } from './AuthenticationContext.js';
+import LoadingPage from './loadingPage.js';
+
 
 // Registra todos los componentes que se van a usar
 Chart.register(CategoryScale, LinearScale, BarElement, ArcElement, LineElement, PointElement, PieController, LineController, BarController, Title, Tooltip, Legend);
@@ -40,9 +42,11 @@ const Insights = () =>{
     const chart = useRef(null);
     const[selectChart, setSelectChart] = useState('');
     const{ getUserInfo} = useAuth();
+    const[loading, setLoading] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
           try {
+            setLoading(true);
             let userInfo = getUserInfo();
             const userId = userInfo.usernameId;
             const role = userInfo.role;
@@ -59,6 +63,8 @@ const Insights = () =>{
             }
           } catch (error) {
             console.error('Error fetching data:', error);
+          }finally{
+            setLoading(false);
           }
         };
       
@@ -274,7 +280,7 @@ const Insights = () =>{
         setMyChart(new Chart(chart.current, config));
     }
 
-    return (
+    return loading ? <LoadingPage/>: (
         <div>
             <div className="container-chart-choose">
             <form id="form-chart" onSubmit={drawChart}>
