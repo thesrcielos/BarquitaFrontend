@@ -11,6 +11,7 @@ import { useAuth } from './AuthenticationContext.js';
 import Home from './home.js';
 import TaskInfo from './taskInfo.js';
 import { AddTaskForm, AddEditForm } from './tasksForms.js';
+import TaskList from './taskList.js';
 
 const difficultyLevels = ['alta', 'media', 'baja'];
 const priorityLevels = ['1', '2', '3', '4', '5'];
@@ -49,7 +50,7 @@ const Tasks = () => {
   }, [getUserInfo]);
 
   const toggleMenu = (id) => {
-    setMenuVisible(menuVisible === id ? null : id);
+    setMenuVisible(id);
   }
 
   const changeTaskNotCompletedVisibility = () => {
@@ -125,68 +126,6 @@ const Tasks = () => {
 
   const hideAddTaskForm = () => {
     setIsAddTaskVisible(false);
-  };
-
-  const TaskList = ({ tasks, onDelete}) => {
-    return (
-      <div className="for-complete">
-        {tasks.map((task) => (
-          <Task
-            key={task.id}
-            task={task}
-            onDelete={onDelete}
-            completed={false}
-          />
-        ))}
-      </div>
-    );
-  };
-
-  const Task = ({ task, onDelete, completed}) => {
-    const handleEdit = () => {
-      setInfoTaskId(task.id);
-      toggleMenu(null);
-    };
-
-    return (
-      <div className={`task-container`}>
-        <button className={`menu-btn`} onClick={() => toggleMenu(task.id)}>⋮</button>
-        <div className={`task-info`} onClick={() => setTaskInfoId(task.id)}>
-          <p className={`task-name`}>{task.name}</p>
-          <p className={`task-date`}>{dateFormat(task.deadline)}</p>
-          <p className={`task-priority`}>Prioridad {task.priority}</p>
-          <p className={`task-difficulty`}>{task.difficulty}</p>
-        </div>
-        {menuVisible === task.id && (
-        <div className={`dropdown-content`}>
-          <button className={`edit-btn`} onClick={() => handleEdit()}>✏️ Editar</button>
-          <button className={`delete-btn`} onClick={()=>onDelete(task.id, completed)}>🗑️ Eliminar</button>
-          <label className={`checkbox-button`}>
-            <input type="checkbox" className={`myCheckbox`} checked={task.state}
-            name="myCheckbox" value="no" onChange={() => handleChangeStateTask(task)}/>
-            <span>Completada</span>
-          </label>
-        </div>
-        )}
-      </div>
-    );
-  
-  };
-  
-  const CompletedTaskList = ({ tasks, onDelete, onUpdate }) => {
-    return (
-      <div className="complete">
-        {tasks.map(task => (
-          <Task
-            key={task.id}
-            task={task}
-            onDelete={onDelete}
-            onUpdate={onUpdate}
-            completed={true}
-          />
-        ))}
-      </div>
-    );
   };
 
   // Función para filtrar las tareas por dificultad
@@ -273,6 +212,12 @@ const disableFilter = async () => {
         <TaskList
           tasks={tasks}
           onDelete={handleDeleteTask}
+          setInfoTaskId={setInfoTaskId}
+          setTaskInfoId={setTaskInfoId}
+          toggleMenu={toggleMenu}
+          handleChangeStateTask={handleChangeStateTask}
+          completed={false}
+          menuVisible={menuVisible}
         />
         )}
       </div>
@@ -282,11 +227,16 @@ const disableFilter = async () => {
           <h2 className="title-task">Completadas</h2>
         </div>
       { isTasksCompletedVisible && (
-        <CompletedTaskList
+        <TaskList
           className="container-tasks-completed"
           tasks={tasksCompleted}
           onDelete={handleDeleteTask}
-          onUpdate={handleUpdateTask}
+          setInfoTaskId={setInfoTaskId}
+          setTaskInfoId={setTaskInfoId}
+          toggleMenu={toggleMenu}
+          handleChangeStateTask={handleChangeStateTask}
+          completed={true}
+          menuVisible={menuVisible}
         />
       )}
       </div>

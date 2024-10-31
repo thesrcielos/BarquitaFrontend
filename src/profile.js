@@ -6,7 +6,7 @@ import AdminMenu from './AdminMenu';
 import Home from './home';
 
 const UserProfile = () => {
-  const{getUserInfo} = useAuth();
+  const{getUserInfo, updateUser} = useAuth();
   const[userId, setUserId] = useState('');
   const[userName, setUserName] = useState('');
   const[userEmail, setUserEmail] = useState('');
@@ -37,6 +37,7 @@ const UserProfile = () => {
       if (userPassword === userConfirmPassword) {
         await changeUserName(userId, userName);
         await changeUserPassword(userId, userPassword);
+        updateUser();
         setUserPassword('');
         setIsEditingProfile(false);
       }

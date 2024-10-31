@@ -25,6 +25,11 @@ export const AuthProvider = ({ children }) => {
       }
     }
   
+  const updateUser = async () => {
+    let userDB = await getUserDBInfo(user.email);
+    setUser(userDB);
+  }
+
   const getRoles = useCallback(async (token) => {
     try {
       const email = jwtDecode(token).sub;
@@ -113,7 +118,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth, loading, setLoading}}>
+    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth, loading, setLoading, updateUser}}>
       {children}
     </AuthContext.Provider>
   );
