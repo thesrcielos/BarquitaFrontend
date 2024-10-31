@@ -17,6 +17,7 @@ const TaskForm = ({onSubmit, onClose, onChange, taskData, title}) => {
             placeholder="Nombre"
             value={taskData.name}
             onChange={onChange}
+            maxLength={40}
             required
           />
           <label htmlFor='description'>Descripción</label>
@@ -26,6 +27,7 @@ const TaskForm = ({onSubmit, onClose, onChange, taskData, title}) => {
             placeholder="Descripción"
             value={taskData.description}
             onChange={onChange}
+            maxLength={100}
             required
           />
           <label htmlFor='deadline'>Fecha Límite</label>
