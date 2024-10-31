@@ -6,10 +6,7 @@ import LoadingPage from "./loadingPage";
 const App = () => {
   const {loading} = useAuth();
 
-  if(loading){
-    return <LoadingPage/>
-  }
-  return (
+  return loading ? <LoadingPage/> :  (
       <Router>
           <Routes>
             <Route path="/*" element={<AppRoutes/>} />

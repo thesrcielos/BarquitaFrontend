@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute';
 import InsightsUser from './insightsUser';
 import AdminPanel from './AdminPanel';
 import InsightsAdmin from './insightsAdmin';
+import UserProfile from './profile';
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,11 @@ const AppRoutes = () => {
           </ProtectedRoute>
           }
         />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <UserProfile/>
+          </ProtectedRoute>
+        }></Route>
     </Routes>
   );
 }
