@@ -524,24 +524,8 @@
     opacity: 1;
   }
 
-/* Contenedor principal de la información del usuario */
-.user-info {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border: 2px solid #ccc;
-  z-index: 100;
-}
-
 /* Texto para el nombre y el correo */
-.user-info p {
-  margin: 12px 0;
-  font-size: 16px;
-  color: #333;
-}
+
 
 /* Estilo para los campos de entrada (input) */
 .input-field {
@@ -560,7 +544,7 @@
 }
 
 /* Botones de la interfaz */
-.button, .button-close-edit-profile, .edit-user-information-button, .close-user-information-button, .button-save {
+.button, .button-close-edit-profile, .button-save {
   padding: 10px 20px;
   margin: 10px 5px;
   border: none;
@@ -579,25 +563,6 @@
   background-color: #e53935;
 }
 
-/* Estilo para el botón de editar la información */
-.edit-user-information-button {
-  background-color: #2196f3;
-  color: white;
-}
-
-.edit-user-information-button:hover {
-  background-color: #1e88e5;
-}
-
-/* Estilo para el botón de cerrar perfil */
-.close-user-information-button {
-  background-color: #FF5722;
-  color: white;
-}
-
-.close-user-information-button:hover {
-  background-color: #f4511e;
-}
 
 .profile-button {
   display: flex;
@@ -626,7 +591,7 @@
   align-items: center;         /* Alinea verticalmente el título y el botón */
   justify-content: space-between; /* Distribuye el contenido a los extremos */
   width: 100%;                 /* Abarca todo el ancho de la pantalla */
-  padding: 0 20px;             /* Agrega algo de margen en los lados */
+  margin: 10px;          /* Agrega algo de margen en los lados */
 }
 
 .task-menu h1 {
@@ -658,6 +623,9 @@
   border-radius: 4px;
 }
 
+.disable-filter-buton{
+  background-color: #aa2805;
+}
 .button-save,
 .button-close-edit-profile {
   margin-right: 10px;

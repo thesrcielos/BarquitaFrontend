@@ -14,8 +14,12 @@ const Home = () => {
           <Link to="/insightsUser" className="nav-button">Insights</Link>
         </li>
         <li>
+          <Link to="/profile" className="nav-button">Profile</Link>
+        </li>
+        <li>
           <Link to="/" className="nav-button" onClick={logout}>Logout</Link>
         </li>
+        
       </ul>
     </nav>
   );

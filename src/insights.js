@@ -39,7 +39,7 @@ const Insights = () =>{
     const [myChart, setMyChart] = useState(null);
     const chart = useRef(null);
     const[selectChart, setSelectChart] = useState('');
-    const{ getUserInfo } = useAuth();
+    const{ getUserInfo} = useAuth();
     useEffect(() => {
         const fetchData = async () => {
           try {
