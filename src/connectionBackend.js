@@ -375,7 +375,7 @@ export async function changeUserName(userId, newName){
 export async function changeUserPassword(userId, newPassword){
     const token = localStorage.getItem('token');
     verifyTokenExists();
-    const response = await fetch(`${API_URL}/user/changeName?userId=${userId}&newName=${newPassword}`, {
+    const response = await fetch(`${API_URL}/user/changePassword?userId=${userId}&newPassword=${newPassword}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
