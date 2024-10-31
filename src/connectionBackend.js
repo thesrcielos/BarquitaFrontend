@@ -1,4 +1,4 @@
-const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
+const API_URL = 'http://localhost:8080';
 
 /**
  * Fetches all tasks by their state from the server.
@@ -322,11 +322,13 @@ export async function getUserDBInfo(email) {
             'Authorization': `Bearer ${token}` 
         },
     });
+    console.log(response)
     verifyIfTokenHasExpired(response);
     return await response.json();
 }
 
 const verifyIfTokenHasExpired = (response) => {
+    console.log(response);
     if(response.status === 403){
         localStorage.removeItem('token');
         alert("Sesión expirada, por favor inicia sesión nuevamente");
