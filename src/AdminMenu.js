@@ -15,6 +15,9 @@ const AdminMenu = () => {
             <Link to="/insightsAdmin" className="nav-button">Insights</Link>
           </li>
           <li>
+            <Link to="/profile" className="nav-button">Profile</Link>
+          </li>
+          <li>
             <Link to="/" className="nav-button" onClick={logout}>Logout</Link>
           </li>
         </ul>

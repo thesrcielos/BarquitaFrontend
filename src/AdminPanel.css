@@ -1,7 +1,6 @@
 .user-table {
-    width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin: 20px 10px;
     font-family: Arial, sans-serif;
   }
   

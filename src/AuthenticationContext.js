@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  
   const verifyAuth = async () =>{
       setLoading(true);
       const storedToken = localStorage.getItem('token');
@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({email, password}) => {
     const userCredentials = { email: email, password:password };
+    setLoading(true);
     try{
       const response = await loginUser(userCredentials);
 
@@ -55,10 +56,13 @@ export const AuthProvider = ({ children }) => {
 
     }catch(e){
       return {authenticated: false, error:'Error vuelve a intentarlo mas tarde'};
+    }finally{
+      setLoading(false);
     }
 };
 
   const register = async (user) => {
+    setLoading(true);
     try {
       const response = await registerUser(user);
   
@@ -73,6 +77,8 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       console.error("Error en el registro:", e);
       return { created: false, error: 'Error vuelve a intentarlo mas tarde' };
+    }finally{
+      setLoading(false);
     }
   };
   
@@ -107,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth, loading}}>
+    <AuthContext.Provider value={{login, logout, isUserAuthenticated, register, getUserInfo, verifyAuth, loading, setLoading}}>
       {children}
     </AuthContext.Provider>
   );

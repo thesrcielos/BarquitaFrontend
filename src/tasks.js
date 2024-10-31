@@ -5,10 +5,12 @@ import {
   addTask,
   deleteTask,
   updateTask,
-  updateTaskState
+  updateTaskState,
 } from './connectionBackend.js';
 import { useAuth } from './AuthenticationContext.js';
 import Home from './home.js';
+import TaskInfo from './taskInfo.js';
+import { AddTaskForm, AddEditForm } from './tasksForms.js';
 
 const difficultyLevels = ['alta', 'media', 'baja'];
 const priorityLevels = ['1', '2', '3', '4', '5'];
@@ -29,14 +31,12 @@ const Tasks = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [visibleFilter, setVisibleFilter] = useState('none');
   const [isAnyFilterActivate, setIsAnyFilterActivate] = useState(false);
-
   
   useEffect(() => {
     const fetchUserIdAndTasks = async () => {
       const userInfo = getUserInfo();
       const userIdInfo = userInfo.usernameId;
       setUserId(userIdInfo);
-
       if (userIdInfo) {
         const incompleteTasks = await getAllTasksByState(userIdInfo, false);
         const completedTasks = await getAllTasksByState(userIdInfo, true);
@@ -249,10 +249,13 @@ const disableFilter = async () => {
     <div className="app-container">
       <Home/>
       <div className="header">
-        <h1>Mis tareas</h1>
+        <div className="task-menu">
+          <h1>Mis tareas</h1>
+        </div>
         <div className="buttons">
           <button className="disable-filter-buton" onClick={() => disableFilter()}>Eliminar filtros 🗑️</button>
-          <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝</button>
+          <button className="order-by-priority-button" onClick={() => showFilter('priority')}>Ordenar por prioridad 🔝
+          </button>
           <button className="order-by-difficulty-button" onClick={() => showFilter('difficulty')}>Ordenar por dificultad 👀</button>
           <button className="order-by-date-button" onClick={() => showFilter('date')}>Filtrar por fecha 📆</button>
           <button className="add-task-button" onClick={showAddTaskForm}>Agregar tarea ➕</button>
@@ -324,170 +327,35 @@ const disableFilter = async () => {
       )}
       {/**Hacer visible el formulario de filtrar por prioridad */}
       {visibleFilter === 'priority' && (
-      <div className='filter-container'>
-        <div className="priority-filter-container">
-        <button className="close-priority-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
-        <h2>Seleccionar Prioridad</h2>
-        <select id="filter-priority" onChange={(e) => setSelectedPriority(e.target.value)}>
-          <option value="" disabled selected>Seleccionar prioridad</option>
-          {priorityLevels.map(p => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
-        <button id="apply-priority-filter" onClick={filterTasksByPriority}>Aplicar filtro</button>
-        </div>
-      </div>
+          <div className='filter-container'>
+            <div className="priority-filter-container">
+              <button className="close-priority-filter" onClick={() => setVisibleFilter('none')}>✖️</button>
+              <h2>Seleccionar Prioridad</h2>
+              <select id="filter-priority" onChange={(e) => setSelectedPriority(e.target.value)}>
+                <option value="" disabled selected>Seleccionar prioridad</option>
+                {priorityLevels.map(p => (
+                    <option key={p} value={p}>{p}</option>
+                ))}
+              </select>
+              <button id="apply-priority-filter" onClick={filterTasksByPriority}>Aplicar filtro</button>
+            </div>
+          </div>
       )}
-      
+
       {infoTaskId !== null && (
-      <div className='edit-info-container'>       
-          <AddEditForm
-            onEditTask={handleUpdateTask}
-            onClose={closeEditForm}
-            task={getTaskById(infoTaskId)}
+          <div className='edit-info-container'>
+            <AddEditForm
+                onEditTask={handleUpdateTask}
+                onClose={closeEditForm}
+                task={getTaskById(infoTaskId)}
           />
       </div>
       )}
     </div>
   );
 };
-const TaskForm = ({onSubmit, onClose, onChange, taskData, title}) => {
-  return (<div className='add-task-info-container'>
-      <form className="task-form" onSubmit={onSubmit}>
-        <button className="close-add-task" onClick={onClose}>✖️</button>
-        <h2>{title}</h2>
-        <label htmlFor='name'>Nombre</label>
-        <input
-          className="task-input"
-          type="text"
-          name="name"
-          placeholder="Nombre"
-          value={taskData.name}
-          onChange={onChange}
-          required
-        />
-        <label htmlFor='description'>Descripción</label>
-        <textarea
-          className="task-textarea"
-          name="description"
-          placeholder="Descripción"
-          value={taskData.description}
-          onChange={onChange}
-          required
-        />
-        <label htmlFor='deadline'>Fecha Límite</label>
-        <input
-          className="task-datetime"
-          type="datetime-local"
-          name="deadline"
-          value={taskData.deadline}
-          onChange={onChange}
-          required
-        />
-        <label htmlFor='difficulty'>Dificultad</label>
-        <select className="task-difficulty" name="difficulty" 
-        value={taskData.difficulty} onChange={onChange} required>
-          <option value="">Dificultad</option>
-          {difficultyLevels.map(level => (
-            <option key={level} value={level.toUpperCase()}>{level.toUpperCase()}</option>
-          ))}
-        </select>
-        <label htmlFor='priority'>Prioridad</label>
-        <select className="task-priority" name="priority" 
-        value={taskData.priority} onChange={onChange} required>
-          <option value="">Prioridad</option>
-          {priorityLevels.map(p => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
-        <label htmlFor='estimatedTime'>Tiempo Estimado</label>
-        <input name='estimatedTime' type='number' value={taskData.estimatedTime}
-        min='1' max='100' onChange={onChange} required/>
-        <button className="submit-task-button" type="submit">Enviar</button>
-      </form>
-    </div>
-  );
-}
-const AddEditForm = ({ onEditTask, onClose, task}) => {
-  const [taskData, setTaskData] = useState({
-    id: task.id,
-    name: task.name,
-    description: task.description,
-    deadline: task.deadline,
-    difficulty: task.difficulty,
-    priority: task.priority,
-    state: task.state,
-    estimatedTime: task.estimatedTime
-  });
- 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onEditTask({ ...taskData});
-    onClose();
-  };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setTaskData(prevData => ({ ...prevData, [name]: value }));
-  };
-
-  return (<TaskForm 
-            onSubmit={handleSubmit}
-            onClose={onClose}
-            onChange={handleChange}
-            taskData={taskData}
-            title={"Editar Tarea"}
-        />);
-
-}
-const AddTaskForm = ({ onAddTask, onClose }) => {
-  const [taskData, setTaskData] = useState({
-    name: '',
-    description: '',
-    deadline: '',
-    difficulty: '',
-    priority: '',
-    estimatedTime: 1
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setTaskData(prevData => ({ ...prevData, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onAddTask({ ...taskData, state: false });
-    onClose();
-  };
-
-  return (
-    <TaskForm 
-      onSubmit={handleSubmit}
-      onClose={onClose}
-      onChange={handleChange}
-      taskData={taskData}
-      title={"Crear Tarea"}
-    />
-  );
-};
-
-const TaskInfo = ({task, onClose}) => {
-  return (
-    <div className='visualize-task-info-container'>
-      <div className="visualize-task-info">
-        <button className="close-visualize" onClick={onClose}>x</button>
-        <p>Nombre: {task.name}</p>
-        <p>Descripción: {task.description}</p>
-        <p>Fecha límite: {dateFormat(task.deadline)}</p>
-        <p>Dificultad: {task.difficulty}</p>
-        <p>Prioridad: {task.priority}</p>
-        <p>Tiempo Estimado: {task.estimatedTime} horas</p>
-      </div>
-    </div>
-  );
-}
-function dateFormat(date){
+export function dateFormat(date){
   let format = new Date(date);
   return `${format.getDate()}/${format.getMonth()+1}/${format.getFullYear()} 
           - ${hoursFormat(format.getHours().toString())}:${minuteFormat(format.getMinutes().toString())}`;
