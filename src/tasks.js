@@ -50,7 +50,7 @@ const Tasks = () => {
   }, [getUserInfo]);
 
   const toggleMenu = (id) => {
-    setMenuVisible(menuVisible == id ? null : id);
+    setMenuVisible(menuVisible === id ? null : id);
   }
 
   const changeTaskNotCompletedVisibility = () => {
