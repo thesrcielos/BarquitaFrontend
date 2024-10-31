@@ -31,7 +31,7 @@ const TaskList = ({ tasks, onDelete, setInfoTaskId, setTaskInfoId, toggleMenu, h
       <div className={`task-container`}>
         <button className={`menu-btn`} onClick={() =>toggleMenu(task.id)}>⋮</button>
         <div className={`task-info`} onClick={() => setTaskInfoId(task.id)}>
-          <p className={`task-name`}>{task.name}</p>
+          <p className={`task-name`}>{task.name.length < 20 ?task.name : task.name.substring(0,19) +"..."}</p>
           <p className={`task-date`}>{dateFormat(task.deadline)}</p>
           <p className={`task-priority`}>Prioridad {task.priority}</p>
           <p className={`task-difficulty`}>{task.difficulty}</p>
