@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5b1f62d0-fbb5-411f-bf9c-3eb662df6bca" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connectionBackend.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connectionBackend.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/tasks.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +29,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/profileWebSite",
+    "git-widget-placeholder": "feature/messagesOnFilterButtons",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -54,6 +56,9 @@
       <updated>1729813788397</updated>
       <workItem from="1729813790719" duration="6646000" />
       <workItem from="1730239737472" duration="14066000" />
+      <workItem from="1730335991458" duration="2338000" />
+      <workItem from="1730409513954" duration="7065000" />
+      <workItem from="1730524552399" duration="1275000" />
     </task>
     <servers />
   </component>
