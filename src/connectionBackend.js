@@ -1,4 +1,4 @@
-const API_URL = 'https://taskmanagement-h3h6aeggbtbwdvfs.brazilsouth-01.azurewebsites.net';
+const API_URL = 'http://localhost:8080';
 
 /**
  * Fetches all tasks by their state from the server.

@@ -32,6 +32,7 @@ const Tasks = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [visibleFilter, setVisibleFilter] = useState('none');
   const [isAnyFilterActivate, setIsAnyFilterActivate] = useState(false);
+  const messageForNoAttributeSelected = "Por favor seleccione una opción";
   
   useEffect(() => {
     const fetchUserIdAndTasks = async () => {
@@ -137,19 +138,25 @@ const filterTasksByDifficulty = () => {
     setTasksCompleted(newFilteredTasksCompleted);
     setVisibleFilter('none');
     setIsAnyFilterActivate(true);
+    setSelectedDifficulty('');
+  } else {
+    alert(messageForNoAttributeSelected);
   }
 };
 
 // Función para filtrar las tareas por prioridad
 const filterTasksByPriority = () => {
   if (selectedPriority) {
+    console.log(selectedPriority)
     const newFilteredTasks = tasks.filter(task => task.priority === selectedPriority);
     setTasks(newFilteredTasks);
     const newFilteredTasksCompleted = tasksCompleted.filter(task => task.priority === selectedPriority);
     setTasksCompleted(newFilteredTasksCompleted);
-    setSelectedPriority(selectedPriority);
     setVisibleFilter('none');
     setIsAnyFilterActivate(true);
+    setSelectedPriority('');
+  } else {
+    alert(messageForNoAttributeSelected);
   }
 };
 
@@ -160,9 +167,11 @@ const filterTasksByDate = () => {
     setTasks(newFilteredTasks);
     const newFilteredTasksCompleted = tasksCompleted.filter(task => task.deadline <= selectedDate);
     setTasksCompleted(newFilteredTasksCompleted);
-    setSelectedDate(selectedDate);
     setVisibleFilter('none');
     setIsAnyFilterActivate(true);
+    setSelectedDate('');
+  } else {
+    alert(messageForNoAttributeSelected);
   }
 }
 
