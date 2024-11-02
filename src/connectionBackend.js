@@ -322,11 +322,13 @@ export async function getUserDBInfo(email) {
             'Authorization': `Bearer ${token}` 
         },
     });
+    console.log(response)
     verifyIfTokenHasExpired(response);
     return await response.json();
 }
 
 const verifyIfTokenHasExpired = (response) => {
+    console.log(response);
     if(response.status === 403){
         localStorage.removeItem('token');
         alert("Sesión expirada, por favor inicia sesión nuevamente");

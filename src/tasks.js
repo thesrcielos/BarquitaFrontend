@@ -51,7 +51,7 @@ const Tasks = () => {
   }, [getUserInfo]);
 
   const toggleMenu = (id) => {
-    setMenuVisible(id);
+    setMenuVisible(menuVisible === id ? null : id);
   }
 
   const changeTaskNotCompletedVisibility = () => {
@@ -147,8 +147,8 @@ const filterTasksByDifficulty = () => {
 // Función para filtrar las tareas por prioridad
 const filterTasksByPriority = () => {
   if (selectedPriority) {
-    console.log(selectedPriority)
-    const newFilteredTasks = tasks.filter(task => task.priority === selectedPriority);
+    let priority = parseInt(selectedPriority, 10);
+    const newFilteredTasks = tasks.filter(task => task.priority === priority);
     setTasks(newFilteredTasks);
     const newFilteredTasksCompleted = tasksCompleted.filter(task => task.priority === selectedPriority);
     setTasksCompleted(newFilteredTasksCompleted);

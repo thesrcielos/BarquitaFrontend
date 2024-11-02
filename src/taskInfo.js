@@ -6,12 +6,12 @@ const TaskInfo = ({task, onClose}) => {
       <div className='visualize-task-info-container'>
         <div className="visualize-task-info">
           <button className="close-visualize" onClick={onClose}>x</button>
-          <p>Nombre: {task.name}</p>
-          <p>Descripción: {task.description}</p>
-          <p>Fecha límite: {dateFormat(task.deadline)}</p>
-          <p>Dificultad: {task.difficulty}</p>
-          <p>Prioridad: {task.priority}</p>
-          <p>Tiempo Estimado: {task.estimatedTime} horas</p>
+          <p><b>Nombre:</b> {task.name}</p>
+          <p><b>Descripción:</b> {task.description}</p>
+          <p><b>Fecha límite:</b> {dateFormat(task.deadline)}</p>
+          <p><b>Dificultad:</b> {task.difficulty}</p>
+          <p><b>Prioridad:</b> {task.priority}</p>
+          <p><b>Tiempo Estimado:</b> {task.estimatedTime} horas</p>
         </div>
       </div>
     );
